@@ -11,28 +11,42 @@ using namespace sf;
 struct winParam
 {	
 	// size window
-	std::atomic<VideoMode> videoMode;
+	VideoMode videoMode{VideoMode(800, 600)};
 	// name window (title)
-	std::atomic<std::string> name;
+	std::string name{""};
 };
 
 // Struct for send signals
 struct winSignals
 {
 	// for forsed window close
-	std::atomic<bool> closeNow;
+	std::atomic<bool> closeNow{false};
 	// for update settings window
-	std::atomic<bool> updateParam;
+	std::atomic<bool> updateParam{false};
+	// for update game matrix
+	std::atomic<bool> updateMatrix{false};
+};
+
+struct Resources
+{
+	std::atomic<Texture> button;
 };
 
 winParam param;
 winSignals signals;
+Resources resources;
 
 // Main window cycle
-int threadWindow(winParam* param, winSignals* signals)
+int threadWindow(winParam* param, winSignals* signals, Resources* res)
 {
-	Window win((*param).videoMode.load(std::memory_order_seq_cst), (*param).name.load(std::memory_order_seq_cst));
+	RenderWindow win((*param).videoMode, (*param).name);
 	Event event;
+	Sprite spriteTest;
+	spriteTest.setTexture(res->button.load(std::memory_order_seq_cst));
+	spriteTest.setPosition(Vector2f(20, 50));
+	spriteTest.setColor(Color(0, 225, 225, 225));
+
+	win.clear(Color(67, 67, 67, 33));
 
 	while (win.isOpen())
 	{
@@ -47,10 +61,10 @@ int threadWindow(winParam* param, winSignals* signals)
 		if ((*signals).updateParam.load(std::memory_order_seq_cst)) {
 			win.setSize(
 				Vector2u(
-					(*param).videoMode.load(std::memory_order_seq_cst).width,
-					(*param).videoMode.load(std::memory_order_seq_cst).height
+					(*param).videoMode.width,
+					(*param).videoMode.height
 				));
-			win.setTitle((*param).name.load(std::memory_order_seq_cst));
+			win.setTitle((*param).name);
 			(*signals).updateParam.store(false, std::memory_order_seq_cst);
 		}
 
@@ -62,27 +76,57 @@ int threadWindow(winParam* param, winSignals* signals)
 			case Event::Closed:
 				win.close();
 				return 0;
+
+			case Event::MouseEntered:
+				break;
+
+			case Event::MouseLeft:
+				break;
+
+			case Event::Resized:
+				win.clear(Color(67, 67, 67, 33));
+				win.display();
+				break;
+
+			case Event::SensorChanged:
+				std::cout << "sensor change\n";
+				break;
+
+			case Event::MouseButtonPressed:
+				std::cout << "+";
+				break;
+
+			case Event::MouseButtonReleased:
+				std::cout << "-\n";
+				break;
+
 			default:
 				break;
 			}
 		}
+
+		win.clear(Color(67, 67, 67, 33));
+		
+		win.draw(spriteTest);
+
+		win.display();
 	}
-}
-
-// Set standard settings for window
-void standartParam() {
-	param.name = "LieLife";
-	param.videoMode = VideoMode(800, 600);
-
-	signals.closeNow.store(false, std::memory_order_seq_cst);
 }
 
 // Main function
 int main()
 {
 	std::cout << "Start program\n\n";
-	standartParam();
 	
+	std::cout << "Load resources...\n";
+	Texture tex;
+	if (!tex.loadFromFile("Resources/Button.png"))
+	{
+		std::cout << "Error read file.\n";
+		tex.create(120, 80);
+	}
+	resources.button.store(tex, std::memory_order_seq_cst);
+
 	std::cout << "Create window thread...\n";
 	std::thread thr(threadWindow, &param, &signals);
 
