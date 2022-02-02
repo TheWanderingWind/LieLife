@@ -41,11 +41,11 @@ Resources resources;
 // Main window cycle
 int threadWindow(winParam* param, winSignals* signals, Resources* res)
 {
-	RenderWindow win((*param).videoMode, (*param).name);
-	Event event;
-	Sprite spriteTest;
-	Texture tex_button;
-	
+	RenderWindow win((*param).videoMode, (*param).name); // Main window
+	Event event;			// event-object for handles events
+	Sprite spriteTest;		// test sprite
+	Texture tex_button;		// texture for buttons
+	// Geting texture for button
 	while (!signals->readTexture) {}
 	signals->readTexture.store(false, std::memory_order_seq_cst);
 	tex_button = res->button;
