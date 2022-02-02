@@ -25,11 +25,13 @@ struct winSignals
 	std::atomic<bool> updateParam{false};
 	// for update game matrix
 	std::atomic<bool> updateMatrix{false};
+	// for get or set texture
+	std::atomic<bool> readTexture{ true };
 };
 
 struct Resources
 {
-	std::atomic<Texture> button;
+	Texture button;
 };
 
 winParam param;
@@ -42,7 +44,14 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	RenderWindow win((*param).videoMode, (*param).name);
 	Event event;
 	Sprite spriteTest;
-	spriteTest.setTexture(res->button.load(std::memory_order_seq_cst));
+	Texture tex_button;
+	
+	while (!signals->readTexture) {}
+	signals->readTexture.store(false, std::memory_order_seq_cst);
+	tex_button = res->button;
+	signals->readTexture.store(true, std::memory_order_seq_cst);
+	
+	spriteTest.setTexture(tex_button);
 	spriteTest.setPosition(Vector2f(20, 50));
 	spriteTest.setColor(Color(0, 225, 225, 225));
 
@@ -120,15 +129,17 @@ int main()
 	
 	std::cout << "Load resources...\n";
 	Texture tex;
+	signals.readTexture.store(false, std::memory_order_seq_cst);
 	if (!tex.loadFromFile("Resources/Button.png"))
 	{
 		std::cout << "Error read file.\n";
 		tex.create(120, 80);
 	}
-	resources.button.store(tex, std::memory_order_seq_cst);
+	resources.button = tex;
+	signals.readTexture.store(true, std::memory_order_seq_cst);
 
 	std::cout << "Create window thread...\n";
-	std::thread thr(threadWindow, &param, &signals);
+	std::thread thr(threadWindow, &param, &signals, &resources);
 
 	std::cout << "Thread created.\n";
 
