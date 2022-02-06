@@ -4,6 +4,9 @@
 #include <atomic>
 #include <iostream>
 
+#include "Widgets.h"
+#include "Button.h"
+
 
 using namespace sf;
 
@@ -43,19 +46,23 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 {
 	RenderWindow win((*param).videoMode, (*param).name); // Main window
 	Event event;			// event-object for handles events
-	Sprite spriteTest;		// test sprite
-	Texture tex_button;		// texture for buttons
+	
+
 	// Geting texture for button
 	while (!signals->readTexture) {}
 	signals->readTexture.store(false, std::memory_order_seq_cst);
-	tex_button = res->button;
+	Texture texture(res->button);	// texture for button
+	Texture& texture_button = texture;
 	signals->readTexture.store(true, std::memory_order_seq_cst);
 	
-	spriteTest.setTexture(tex_button);
-	spriteTest.setPosition(Vector2f(20, 50));
-	spriteTest.setColor(Color(0, 225, 225, 225));
+	//Sprite sprite(texture_button);
+	//sprite.setColor(Color(160, 160, 160, 225));
 
-	win.clear(Color(67, 67, 67, 33));
+	Button button1(&win, texture_button, Size(100, 40), Position(10, 10), "");
+	Button button2(&win, texture_button, Size(100, 40), Position(120, 10), "");
+	Button button3(&win, texture_button, Size(100, 40), Position(230, 10), "");
+
+	//button1.setTexture(texture_butt);
 
 	while (win.isOpen())
 	{
@@ -98,15 +105,12 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 				break;
 
 			case Event::SensorChanged:
-				std::cout << "sensor change\n";
 				break;
 
 			case Event::MouseButtonPressed:
-				std::cout << "+";
 				break;
 
 			case Event::MouseButtonReleased:
-				std::cout << "-\n";
 				break;
 
 			default:
@@ -116,7 +120,11 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 
 		win.clear(Color(67, 67, 67, 33));
 		
-		win.draw(spriteTest);
+		//win.draw(sprite);
+
+		button1.draw();
+		button2.draw();
+		button3.draw();
 
 		win.display();
 	}
@@ -128,14 +136,13 @@ int main()
 	std::cout << "Start program\n\n";
 	
 	std::cout << "Load resources...\n";
-	Texture tex;
 	signals.readTexture.store(false, std::memory_order_seq_cst);
-	if (!tex.loadFromFile("Resources/Button.png"))
+	if (!resources.button.loadFromFile("Resources/Button.png"))
 	{
 		std::cout << "Error read file.\n";
-		tex.create(120, 80);
+		resources.button.create(120, 80);
 	}
-	resources.button = tex;
+	
 	signals.readTexture.store(true, std::memory_order_seq_cst);
 
 	std::cout << "Create window thread...\n";
