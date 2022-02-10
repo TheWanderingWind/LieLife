@@ -6,30 +6,57 @@
 
 using namespace sf;
 
+Texture Button::button_texture = Texture();
+Font Button::button_font = Font();
 
-Button::Button(RenderWindow *win, Texture &texture, Size size, Position position, std::string text)
+///// Constructs ///////////////////////////////////////////////////////////////////
+
+Button::Button(RenderWindow *win, Size size, Position position, std::string text)
 	: Widget(win, size, position)
 {
-	this->texture = Texture(texture);
-	this->setTexture(this->texture);
+	this->Widget::setTexture(button_texture);
 
 	this->text = text;
 }
 
-Button::Button(RenderWindow *win, Texture &texture, Size size, Position position, std::string text, Color color)
+Button::Button(RenderWindow *win, Size size, Position position, std::string text, Color color)
 	: Widget(win, size, position, color)
 {
-	this->Button::setTexture(this->texture);
+	this->Widget::setTexture(button_texture);
 
 	this->text = text;
 }
 
-Button::Button(RenderWindow *win, Texture &texture) : Widget(win)
+Button::Button(RenderWindow *win) : Widget(win)
 {
-	this->Button::setTexture(this->texture);
+	this->Widget::setTexture(button_texture);
 
 	this->text = "";
 }
+
+///// Getters and Setters //////////////////////////////////////////////////////////
+
+Texture* Button::getTexture()
+{
+	return &button_texture;
+}
+
+void Button::setTexture(Texture& texture)
+{
+	button_texture = Texture(texture);
+}
+
+Font* Button::getFont()
+{
+	return &button_font;
+}
+
+void Button::setFont(Font& font)
+{
+	button_font = Font(font);
+}
+
+///// Functions ////////////////////////////////////////////////////////////////////
 
 void Button::draw()
 {

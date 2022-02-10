@@ -58,9 +58,10 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	//Sprite sprite(texture_button);
 	//sprite.setColor(Color(160, 160, 160, 225));
 
-	Button button1(&win, texture_button, Size(100, 40), Position(10, 10), "");
-	Button button2(&win, texture_button, Size(100, 40), Position(120, 10), "");
-	Button button3(&win, texture_button, Size(100, 40), Position(230, 10), "");
+	Button::setTexture(texture_button);
+	Button button1(&win, Size(100, 40), Position(10, 10), "");
+	Button button2(&win, Size(100, 40), Position(120, 10), "");
+	Button button3(&win, Size(100, 40), Position(230, 10), "");
 
 	//button1.setTexture(texture_butt);
 
