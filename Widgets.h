@@ -43,13 +43,18 @@ struct Size
 	}
 };
 
+// 
+class Widget;
+
 /// <summary>
 /// Struct with parametrs of event (for making functions)
 /// </summary>
 struct EventParam
 {
-	Widget* widget;
+	Widget &widget;
 	Position mousePosition;
+
+	EventParam(Widget &wid, sf::Event event);
 };
 
 /// <summary>
@@ -224,7 +229,7 @@ protected:
 	/// </summary>
 	/// <param name="event">Event object from SF, for getting some parameters</param>
 	/// <returns>EventParam object</returns>
-	EventParam makeParam(sf::Event event);
+	//EventParam makeParam(sf::Event event);
 
 	/// <summary> sprite of widget </summary>
 	sf::Sprite sprite;

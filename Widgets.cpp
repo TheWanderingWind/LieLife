@@ -107,7 +107,7 @@ void Widget::draw()
 
 void Widget::runFunctions(sf::Event events)
 {
-	EventParam eve = makeParam(events);
+	EventParam eve = EventParam(*this, events);
 
 	if ((eve.mousePosition.X == lastMousePosition.X) &&
 		(eve.mousePosition.Y == lastMousePosition.Y))
@@ -167,14 +167,14 @@ void Widget::runFunctions(sf::Event events)
 	lastMousePosition = eve.mousePosition;
 }
 
-EventParam Widget::makeParam(sf::Event event)
-{
-	EventParam eve;
-	eve.mousePosition = Position(event.mouseMove.x, event.mouseMove.y);
-	eve.widget = this;
-
-	return eve;
-}
+//EventParam Widget::makeParam(sf::Event event)
+//{
+//	EventParam eve;
+//	eve.mousePosition = Position(event.mouseMove.x, event.mouseMove.y);
+//	eve.widget = this;
+//
+//	return eve;
+//}
 
 ///// Binded function //////////////////////////////////////////////////////////////
 
@@ -232,4 +232,9 @@ void BindedFunction::deleteFunct(EventType type, void(*fun)(EventParam param))
 		newArray[i - 1] = arrayFunc[i];
 
 	arrayFunc = newArray;
+}
+
+EventParam::EventParam(Widget &wid, sf::Event event) : widget(wid)
+{
+	mousePosition = Position(event.mouseButton.x, event.mouseButton.y);
 }
