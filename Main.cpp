@@ -63,6 +63,16 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	Button button2(&win, Size(100, 40), Position(120, 10), "");
 	Button button3(&win, Size(100, 40), Position(230, 10), "");
 
+	button1.bind(EventType::BUTTON_RIGTH_RELEASE, [](EventParam param) -> void {
+		std::cout << "button1!" << std::endl;
+		});
+	button2.bind(EventType::MOUSE_ENTER, [](EventParam param) -> void {
+		std::cout << "button2!" << std::endl;
+		});
+	button3.bind(EventType::MOUSE_EXIT, [](EventParam param) -> void {
+		std::cout << "button3!" << std::endl;
+		});
+
 	//button1.setTexture(texture_butt);
 
 	while (win.isOpen())
@@ -126,6 +136,10 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 		button1.draw();
 		button2.draw();
 		button3.draw();
+
+		button1.runFunctions(event);
+		button2.runFunctions(event);
+		button3.runFunctions(event);
 
 		win.display();
 	}

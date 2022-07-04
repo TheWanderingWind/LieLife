@@ -105,6 +105,11 @@ void Widget::draw()
 	this->window->draw(this->sprite);
 }
 
+void Widget::bind(EventType type, void(*fun)(EventParam param))
+{
+	binded.addFunct(type, fun);
+}
+
 void Widget::runFunctions(sf::Event events)
 {
 	EventParam eve = EventParam(*this, events);
@@ -112,17 +117,18 @@ void Widget::runFunctions(sf::Event events)
 	if ((eve.mousePosition.X == lastMousePosition.X) &&
 		(eve.mousePosition.Y == lastMousePosition.Y))
 	{	// Position of mouse was not changed
-
+		
 	}
 	else
 	{	// Position of mouse was changed
-
+		/*std::cout << "mouse position change	last: " << lastMousePosition.X << " : " << lastMousePosition.Y
+			<< "	now: " << eve.mousePosition.X << " : " << eve.mousePosition.Y << std::endl;*/
 		if ((eve.mousePosition.X > position.X) &&
 			(eve.mousePosition.Y > position.Y) &&
 			(eve.mousePosition.X < position.X + size.width) &&
 			(eve.mousePosition.Y < position.Y + size.height))
 		{	// mouse in widget now
-			
+			//std::cout << "\nmouse position in widget\n";
 			if ((lastMousePosition.X > position.X) &&
 				(lastMousePosition.Y > position.Y) &&
 				(lastMousePosition.X < position.X + size.width) &&
@@ -169,9 +175,10 @@ void Widget::runFunctions(sf::Event events)
 
 //EventParam Widget::makeParam(sf::Event event)
 //{
-//	EventParam eve;
+//	EventParam eve = EventParam(*this, event);
+//	Vector2i vector = sf::Mouse::getPosition((Window)window);
+//
 //	eve.mousePosition = Position(event.mouseMove.x, event.mouseMove.y);
-//	eve.widget = this;
 //
 //	return eve;
 //}
@@ -231,10 +238,12 @@ void BindedFunction::deleteFunct(EventType type, void(*fun)(EventParam param))
 	for (int i = num + 1; i < size; i++)
 		newArray[i - 1] = arrayFunc[i];
 
+	size--;
 	arrayFunc = newArray;
 }
 
 EventParam::EventParam(Widget &wid, sf::Event event) : widget(wid)
 {
-	mousePosition = Position(event.mouseButton.x, event.mouseButton.y);
+	//sf::Mouse::getPosition();
+	mousePosition = Position(event.mouseMove.x, event.mouseMove.y);
 }

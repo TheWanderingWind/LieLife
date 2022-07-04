@@ -219,6 +219,13 @@ public:
 	void draw();
 
 	/// <summary>
+	/// Bind function
+	/// </summary>
+	/// <param name="type">Event type (when function must run)</param>
+	/// <param name="fun"></param>
+	void bind(EventType type, void (*fun)(EventParam param));
+
+	/// <summary>
 	/// Checks the event type that occurred and run functions
 	/// </summary>
 	void runFunctions(sf::Event event);
@@ -229,7 +236,7 @@ protected:
 	/// </summary>
 	/// <param name="event">Event object from SF, for getting some parameters</param>
 	/// <returns>EventParam object</returns>
-	//EventParam makeParam(sf::Event event);
+	EventParam makeParam(sf::Event event);
 
 	/// <summary> sprite of widget </summary>
 	sf::Sprite sprite;
