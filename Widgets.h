@@ -43,6 +43,73 @@ struct Size
 	}
 };
 
+/// <summary>
+/// Struct with parametrs of event (for making functions)
+/// </summary>
+struct EventParam
+{
+	Widget* widget;
+	Position mousePosition;
+};
+
+/// <summary>
+/// Enum with types of events
+/// </summary>
+enum EventType
+{
+	BUTTON_LEFT_PRESS,
+	BUTTON_LEFT_RELEASE,
+	BUTTON_RIGTH_PRESS,
+	BUTTON_RIGTH_RELEASE,
+	MOUSE_ENTER,
+	MOUSE_EXIT,
+	KEY_PRESS,
+	KEY_RELEASE
+};
+
+/// <summary>
+/// Struct with function and type event when run this function
+/// </summary>
+struct BindedFunction
+{
+private:
+	/// <summary>struct with just function and type</summary>
+	struct TypeAndFunc
+	{
+		EventType mainType;
+		void (*func) (EventParam param);
+
+		TypeAndFunc(EventType type, void (*fun)(EventParam param));
+		TypeAndFunc();
+	};
+
+	/// <summary>array of functions</summary>
+	TypeAndFunc* arrayFunc = new TypeAndFunc[0];
+	/// <summary> size of array </summary>
+	int size = 0;
+public:
+	
+	/// <summary>
+	/// Add new function
+	/// </summary>
+	/// <param name="type">type of event when function must run</param>
+	/// <param name="fun">function to be run</param>
+	void addFunct(EventType type, void (*fun)(EventParam param));
+	
+	/// <summary>
+	/// Run function
+	/// </summary>
+	/// <param name="type">type of event that are binded</param>
+	/// <param name="param">parameters of event</param>
+	void run(EventType type, EventParam param);
+
+	/// <summary>
+	/// Delete function
+	/// </summary>
+	/// <param name="type">type of event when function must run</param>
+	/// <param name="fun">function to be removed</param>
+	void deleteFunct(EventType type, void (*fun)(EventParam param));
+};
 
 /// <summary>
 /// Base class for widgets
@@ -147,6 +214,9 @@ public:
 	void draw();
 
 protected:
+
+	EventParam makeParam(sf::Event);
+
 	/// <summary> sprite of widget </summary>
 	sf::Sprite sprite;
 	/// <summary> texture of widget </summary>
@@ -160,5 +230,6 @@ protected:
 	Position position;
 	/// <summary> color of widget </summary>
 	sf::Color color;
-
+	/// <summary> binded function with this widget </summary>
+	BindedFunction binded;
 };

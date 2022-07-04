@@ -98,9 +98,76 @@ void Widget::setTexture(Texture &tex)
 	this->sprite.setTexture(this->texture);
 }
 
-///// Functions ////////////////////////////////////////////////////////////////////
+//// Functions ////////////////////////////////////////////////////////////////////
 
 void Widget::draw()
 {
 	this->window->draw(this->sprite);
+}
+
+EventParam Widget::makeParam(sf::Event event)
+{
+	EventParam eve;
+	eve.mousePosition = Position(event.mouseMove.x, event.mouseMove.y);
+	eve.widget = this;
+
+	return eve;
+}
+
+///// Binded function //////////////////////////////////////////////////////////////
+
+BindedFunction::TypeAndFunc::TypeAndFunc(EventType type, void(*fun)(EventParam param))
+{
+	mainType = type;
+	func = fun;
+}
+
+BindedFunction::TypeAndFunc::TypeAndFunc()
+{
+	/// nothing
+}
+
+void BindedFunction::addFunct(EventType type, void(*fun)(EventParam param))
+{
+	TypeAndFunc* newArray = new TypeAndFunc[size + 1];
+
+	for (int i = 0; i < size; i++)	newArray[i] = arrayFunc[i];
+	newArray[size] = TypeAndFunc(type, fun);
+	size++;
+
+	arrayFunc = newArray;
+}
+
+void BindedFunction::run(EventType type, EventParam param)
+{
+	for (int i = 0; i < size; i++)
+	{
+		if (arrayFunc[i].mainType == type)
+			arrayFunc->func(param);
+	}
+}
+
+void BindedFunction::deleteFunct(EventType type, void(*fun)(EventParam param))
+{
+	int num = -1;
+	for (int i = 0; i < size; i++) // try find function to be remove
+	{
+		if (arrayFunc[i].mainType == type)
+			if (arrayFunc[i].func == fun)
+			{
+				num = i;
+				break;
+			}
+
+	}
+
+	if (num == -1) return; // if we don`t find
+
+	TypeAndFunc* newArray = new TypeAndFunc[size - 1];
+	for (int i = 0; i < num; i++)
+		newArray[i] = arrayFunc[i];
+	for (int i = num + 1; i < size; i++)
+		newArray[i - 1] = arrayFunc[i];
+
+	arrayFunc = newArray;
 }
