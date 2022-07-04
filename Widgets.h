@@ -213,9 +213,18 @@ public:
 	/// </summary>
 	void draw();
 
-protected:
+	/// <summary>
+	/// Checks the event type that occurred and run functions
+	/// </summary>
+	void runFunctions(sf::Event event);
 
-	EventParam makeParam(sf::Event);
+protected:
+	/// <summary>
+	/// Make parameters for using in dinded functions
+	/// </summary>
+	/// <param name="event">Event object from SF, for getting some parameters</param>
+	/// <returns>EventParam object</returns>
+	EventParam makeParam(sf::Event event);
 
 	/// <summary> sprite of widget </summary>
 	sf::Sprite sprite;
@@ -232,4 +241,6 @@ protected:
 	sf::Color color;
 	/// <summary> binded function with this widget </summary>
 	BindedFunction binded;
+	/// <summary> Last position of mouse </summary>
+	Position lastMousePosition;
 };

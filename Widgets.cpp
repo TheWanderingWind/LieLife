@@ -105,6 +105,68 @@ void Widget::draw()
 	this->window->draw(this->sprite);
 }
 
+void Widget::runFunctions(sf::Event events)
+{
+	EventParam eve = makeParam(events);
+
+	if ((eve.mousePosition.X == lastMousePosition.X) &&
+		(eve.mousePosition.Y == lastMousePosition.Y))
+	{	// Position of mouse was not changed
+
+	}
+	else
+	{	// Position of mouse was changed
+
+		if ((eve.mousePosition.X > position.X) &&
+			(eve.mousePosition.Y > position.Y) &&
+			(eve.mousePosition.X < position.X + size.width) &&
+			(eve.mousePosition.Y < position.Y + size.height))
+		{	// mouse in widget now
+			
+			if ((lastMousePosition.X > position.X) &&
+				(lastMousePosition.Y > position.Y) &&
+				(lastMousePosition.X < position.X + size.width) &&
+				(lastMousePosition.Y < position.Y + size.height))
+				// mouse was in widget before
+			{ }
+			else // mouse was not in widget before
+				binded.run(MOUSE_ENTER, eve);
+
+		} else { // mouse not in widget now
+			if ((lastMousePosition.X > position.X) &&
+				(lastMousePosition.Y > position.Y) &&
+				(lastMousePosition.X < position.X + size.width) &&
+				(lastMousePosition.Y < position.Y + size.height))
+				// mouse was in widget before
+				binded.run(MOUSE_EXIT, eve);
+		}
+	}
+
+	/// Not matter if mouse move
+	if ((eve.mousePosition.X > position.X) &&
+		(eve.mousePosition.Y > position.Y) &&
+		(eve.mousePosition.X < position.X + size.width) &&
+		(eve.mousePosition.Y < position.Y + size.height))
+	{	// mouse in widget now
+		if (events.MouseButtonPressed)
+		{ // Mouse button presed
+			if (events.mouseButton.button == 0)
+				binded.run(BUTTON_LEFT_PRESS, eve);
+			if (events.mouseButton.button == 1)
+				binded.run(BUTTON_RIGTH_PRESS, eve);
+		}
+		if (events.MouseButtonReleased)
+		{ // Mouse button presed
+			if (events.mouseButton.button == 0)
+				binded.run(BUTTON_LEFT_RELEASE, eve);
+			if (events.mouseButton.button == 1)
+				binded.run(BUTTON_RIGTH_RELEASE, eve);
+		}
+	}
+
+	lastMousePosition = eve.mousePosition;
+}
+
 EventParam Widget::makeParam(sf::Event event)
 {
 	EventParam eve;
