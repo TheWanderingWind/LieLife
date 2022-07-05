@@ -172,7 +172,7 @@ public:
 	/// <summary>
 	/// Draw widget
 	/// </summary>
-	void draw();
+	virtual void draw();
 
 	/// <summary>
 	/// Struct with function and type event when run this function

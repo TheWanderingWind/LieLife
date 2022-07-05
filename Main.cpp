@@ -5,19 +5,8 @@
 #include <iostream>
 
 #include "Widgets.h"
+#include "Label.h"
 #include "Button.h"
-
-
-// Далі, що треба зробити:
-// Як виявилось, після натискання кнопки, event не обновлюється
-// Тому якщо після натисканні кнопки нічого не було, то 1) натискання зараховується багато разів,
-// 2) воно постійно думає, що виникає подія натискання
-// Треба ввести додаткову змінну, яка буде слідкувати за цим
-// 
-// Треба розробити класс Base (чи щось подібне), щоб в ньому збирати усі екземпляри Widget-ів 
-// та через нього оновлювати віджети та перевіряти події, щоб не засирати головний код
-//
-
 
 using namespace sf;
 
@@ -46,6 +35,7 @@ struct winSignals
 struct Resources
 {
 	Texture button;
+	Font font;
 };
 
 winParam param;
@@ -77,6 +67,8 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	signals->readTexture.store(false, std::memory_order_seq_cst);
 	Texture texture(res->button);	// texture for button
 	Texture& texture_button = texture;
+	Font font(res->font);	// texture for button
+	Font& font_text= font;
 	signals->readTexture.store(true, std::memory_order_seq_cst);
 	
 	//Sprite sprite(texture_button);
@@ -86,6 +78,9 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	Button button1(&win, Size(100, 40), Position(10, 10), "");
 	Button button2(&win, Size(100, 40), Position(120, 10), "");
 	Button button3(&win, Size(100, 40), Position(230, 10), "");
+
+	Label::setFont(font_text);
+	Label label(&win, Size(100, 40), Position(130, 50), "Test text");
 
 	button1.bind(EventType::BUTTON_RIGTH_RELEASE, test1);
 	button1.bind(EventType::MOUSE_ENTER, test2);
@@ -156,11 +151,6 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 
 		win.clear(Color(67, 67, 67, 33));
 		
-
-		//button1.runFunctions(event);
-		//button2.runFunctions(event);
-		//button3.runFunctions(event);
-
 		button1.updateAll(event);
 		win.display();
 	}
@@ -175,8 +165,22 @@ int main()
 	signals.readTexture.store(false, std::memory_order_seq_cst);
 	if (!resources.button.loadFromFile("Resources/Button.png"))
 	{
-		std::cout << "Error read file.\n";
+		std::cout << "Error read file (button texture).\n";
+		std::cout << "Creating null texture.\n";
 		resources.button.create(120, 80);
+	}
+
+	if (!resources.font.loadFromFile("Resources/vgafixr.fon"))
+	{
+		std::cout << "Error read file (first text font).\n";
+		std::cout << "Try read second font.\n";
+		if (!resources.font.loadFromFile("Resources/19036.ttf"))
+		{
+			std::cout << "Error read file (second text font).\n";
+			std::cout << "Cant find any font.\n";
+			std::cout << "Close program.\n";
+			return 1;
+		}
 	}
 	
 	signals.readTexture.store(true, std::memory_order_seq_cst);
