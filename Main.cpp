@@ -8,6 +8,17 @@
 #include "Button.h"
 
 
+// Далі, що треба зробити:
+// Як виявилось, після натискання кнопки, event не обновлюється
+// Тому якщо після натисканні кнопки нічого не було, то 1) натискання зараховується багато разів,
+// 2) воно постійно думає, що виникає подія натискання
+// Треба ввести додаткову змінну, яка буде слідкувати за цим
+// 
+// Треба розробити класс Base (чи щось подібне), щоб в ньому збирати усі екземпляри Widget-ів 
+// та через нього оновлювати віджети та перевіряти події, щоб не засирати головний код
+//
+
+
 using namespace sf;
 
 // Struct for settings window
@@ -41,6 +52,19 @@ winParam param;
 winSignals signals;
 Resources resources;
 
+void test1(EventParam param) {
+	std::cout << "MOUSE_ENTER_1" << std::endl;
+}
+void test2(EventParam param) {
+	std::cout << "MOUSE_ENTER_2" << std::endl;
+}
+void test3(EventParam param) {
+	std::cout << "MOUSE_EXIT_3" << std::endl;
+}
+void test4(EventParam param) {
+	std::cout << "MOUSE_EXIT_4" << std::endl;
+}
+
 // Main window cycle
 int threadWindow(winParam* param, winSignals* signals, Resources* res)
 {
@@ -63,9 +87,10 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	Button button2(&win, Size(100, 40), Position(120, 10), "");
 	Button button3(&win, Size(100, 40), Position(230, 10), "");
 
-	button1.bind(EventType::BUTTON_RIGTH_RELEASE, [](EventParam param) -> void {
-		std::cout << "button1!" << std::endl;
-		});
+	button1.bind(EventType::BUTTON_RIGTH_RELEASE, test1);
+	button1.bind(EventType::MOUSE_ENTER, test2);
+	button1.bind(EventType::MOUSE_EXIT, test3);
+	button1.bind(EventType::BUTTON_LEFT_PRESS, test4);
 	button2.bind(EventType::MOUSE_ENTER, [](EventParam param) -> void {
 		std::cout << "button2!" << std::endl;
 		});
@@ -138,8 +163,8 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 		button3.draw();
 
 		button1.runFunctions(event);
-		button2.runFunctions(event);
-		button3.runFunctions(event);
+		//button2.runFunctions(event);
+		//button3.runFunctions(event);
 
 		win.display();
 	}

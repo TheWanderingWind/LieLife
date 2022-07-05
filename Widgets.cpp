@@ -121,14 +121,11 @@ void Widget::runFunctions(sf::Event events)
 	}
 	else
 	{	// Position of mouse was changed
-		/*std::cout << "mouse position change	last: " << lastMousePosition.X << " : " << lastMousePosition.Y
-			<< "	now: " << eve.mousePosition.X << " : " << eve.mousePosition.Y << std::endl;*/
 		if ((eve.mousePosition.X > position.X) &&
 			(eve.mousePosition.Y > position.Y) &&
 			(eve.mousePosition.X < position.X + size.width) &&
 			(eve.mousePosition.Y < position.Y + size.height))
 		{	// mouse in widget now
-			//std::cout << "\nmouse position in widget\n";
 			if ((lastMousePosition.X > position.X) &&
 				(lastMousePosition.Y > position.Y) &&
 				(lastMousePosition.X < position.X + size.width) &&
@@ -149,20 +146,28 @@ void Widget::runFunctions(sf::Event events)
 	}
 
 	/// Not matter if mouse move
-	if ((eve.mousePosition.X > position.X) &&
-		(eve.mousePosition.Y > position.Y) &&
-		(eve.mousePosition.X < position.X + size.width) &&
-		(eve.mousePosition.Y < position.Y + size.height))
-	{	// mouse in widget now
-		if (events.MouseButtonPressed)
-		{ // Mouse button presed
+	if ((events.type == sf::Event::MouseButtonPressed) && (buttonIsPresed == false))
+	{ // Mouse button presed
+		buttonIsPresed = true;
+		if ((eve.mousePosition.X > position.X) &&
+			(eve.mousePosition.Y > position.Y) &&
+			(eve.mousePosition.X < position.X + size.width) &&
+			(eve.mousePosition.Y < position.Y + size.height))
+		{	// mouse in widget now
 			if (events.mouseButton.button == 0)
 				binded.run(BUTTON_LEFT_PRESS, eve);
 			if (events.mouseButton.button == 1)
 				binded.run(BUTTON_RIGTH_PRESS, eve);
-		}
-		if (events.MouseButtonReleased)
-		{ // Mouse button presed
+		}	
+	}
+	if ((events.type == sf::Event::MouseButtonReleased) && (buttonIsPresed == true))
+	{ // Mouse button presed
+		buttonIsPresed = false;
+		if ((eve.mousePosition.X > position.X) &&
+			(eve.mousePosition.Y > position.Y) &&
+			(eve.mousePosition.X < position.X + size.width) &&
+			(eve.mousePosition.Y < position.Y + size.height))
+		{	// mouse in widget now
 			if (events.mouseButton.button == 0)
 				binded.run(BUTTON_LEFT_RELEASE, eve);
 			if (events.mouseButton.button == 1)
@@ -171,6 +176,11 @@ void Widget::runFunctions(sf::Event events)
 	}
 
 	lastMousePosition = eve.mousePosition;
+}
+
+sf::RenderWindow* Widget::getWindow()
+{
+	return window;
 }
 
 //EventParam Widget::makeParam(sf::Event event)
@@ -185,38 +195,41 @@ void Widget::runFunctions(sf::Event events)
 
 ///// Binded function //////////////////////////////////////////////////////////////
 
-BindedFunction::TypeAndFunc::TypeAndFunc(EventType type, void(*fun)(EventParam param))
+Widget::BindedFunction::TypeAndFunc::TypeAndFunc(EventType type, void(*fun)(EventParam param))
 {
 	mainType = type;
 	func = fun;
 }
 
-BindedFunction::TypeAndFunc::TypeAndFunc()
+Widget::BindedFunction::TypeAndFunc::TypeAndFunc()
 {
 	/// nothing
 }
 
-void BindedFunction::addFunct(EventType type, void(*fun)(EventParam param))
+void Widget::BindedFunction::addFunct(EventType type, void(*fun)(EventParam param))
 {
 	TypeAndFunc* newArray = new TypeAndFunc[size + 1];
 
-	for (int i = 0; i < size; i++)	newArray[i] = arrayFunc[i];
+	for (int i = 0; i < size; i++) { 
+		newArray[i] = TypeAndFunc(arrayFunc[i].mainType, arrayFunc[i].func);
+	}
 	newArray[size] = TypeAndFunc(type, fun);
 	size++;
 
+	delete arrayFunc;
 	arrayFunc = newArray;
 }
 
-void BindedFunction::run(EventType type, EventParam param)
+void Widget::BindedFunction::run(EventType type, EventParam param)
 {
 	for (int i = 0; i < size; i++)
 	{
 		if (arrayFunc[i].mainType == type)
-			arrayFunc->func(param);
+			arrayFunc[i].func(param);
 	}
 }
 
-void BindedFunction::deleteFunct(EventType type, void(*fun)(EventParam param))
+void Widget::BindedFunction::deleteFunct(EventType type, void(*fun)(EventParam param))
 {
 	int num = -1;
 	for (int i = 0; i < size; i++) // try find function to be remove
@@ -244,6 +257,16 @@ void BindedFunction::deleteFunct(EventType type, void(*fun)(EventParam param))
 
 EventParam::EventParam(Widget &wid, sf::Event event) : widget(wid)
 {
-	//sf::Mouse::getPosition();
-	mousePosition = Position(event.mouseMove.x, event.mouseMove.y);
+	RenderWindow* window = wid.getWindow();
+
+	if ((window->getPosition().x < Mouse::getPosition().x - 8 && 
+		Mouse::getPosition().x - 8 < window->getPosition().x + window->getSize().x)
+		&& 
+		(window->getPosition().y < Mouse::getPosition().y - 30 &&
+		Mouse::getPosition().y - 30 < window->getPosition().y + window->getSize().y))
+		
+		mousePosition = Position(Mouse::getPosition().x - window->getPosition().x - 8, 
+								Mouse::getPosition().y - window->getPosition().y - 30);
+	else
+		mousePosition = Position(-1, -1);
 }
