@@ -26,7 +26,7 @@ void Button::setTextureRelease(Texture texture)
 	Button::textureReleased = Texture(texture);
 }
 
-void Button::setTexturePresed(sf::Texture texture)
+void Button::setTexturePressed(sf::Texture texture)
 {
 	Button::texturePressed = Texture(texture);
 }
@@ -36,7 +36,7 @@ sf::Texture Button::getTextureRelease()
 	return Texture(Button::textureReleased);
 }
 
-sf::Texture Button::getTexturePresed()
+sf::Texture Button::getTexturePressed()
 {
 	return Texture(Button::texturePressed);
 }
@@ -45,5 +45,6 @@ sf::Texture Button::getTexturePresed()
 
 void Button::draw()
 {
-	this->window->draw(this->sprite);
+	window->draw(this->sprite);
+	window->draw(textObj);
 }

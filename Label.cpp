@@ -17,12 +17,17 @@ Label::Label(RenderWindow* win, Size size, Position position,
 	: Widget(win, size, position)
 {
 	this->text = text;
-	textColor = color;
+	this->textColor = textColor;
 	font = standardFont;
 
 	textObj = Text(text, font);
 	textObj.setPosition(position.X, position.Y);
-	textObj.setFillColor(color);
+	textObj.setFillColor(this->textColor);
+
+	FloatRect data = textObj.getGlobalBounds();
+	std::cout << "top: " << data.top << " left: " << data.left << " height: " <<
+		data.height << " width: " << data.width << std::endl;
+	autoSizeProcess();
 }
 
 ///// Getters and Setters //////////////////////////////////////////////////////////
@@ -68,6 +73,7 @@ void Label::setCharacterSize(int size)
 {
 	characterSize = size;
 	textObj.setCharacterSize(characterSize);
+	autoSizeProcess();
 }
 
 int Label::getCharacterSize()
@@ -90,4 +96,13 @@ sf::Uint32 Label::getStyle()
 void Label::draw()
 {
 	window->draw(textObj);
+}
+
+void Label::autoSizeProcess()
+{
+	FloatRect data = textObj.getGlobalBounds();
+	textPosition.X = (size.width - data.width) / 2;
+	textPosition.Y = (size.height - data.height) / 2 - 5;
+
+	textObj.setPosition(position.X + textPosition.X, position.Y + textPosition.Y);
 }
