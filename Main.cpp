@@ -156,16 +156,12 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 
 		win.clear(Color(67, 67, 67, 33));
 		
-		//win.draw(sprite);
 
-		button1.draw();
-		button2.draw();
-		button3.draw();
-
-		button1.runFunctions(event);
+		//button1.runFunctions(event);
 		//button2.runFunctions(event);
 		//button3.runFunctions(event);
 
+		button1.updateAll(event);
 		win.display();
 	}
 }

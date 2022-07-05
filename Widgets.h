@@ -233,6 +233,8 @@ public:
 	// must be delete in future!
 	sf::RenderWindow* getWindow();
 
+	static void updateAll(sf::Event event);
+
 protected:
 	/// <summary>
 	/// Make parameters for using in dinded functions
@@ -260,4 +262,14 @@ protected:
 	Position lastMousePosition;
 	/// <summary> If button pressed now </summary>
 	bool buttonIsPresed = false;
+
+private:
+	Widget();
+
+	static Widget** allWidgets;
+	static int numWidgets;
+
+	static void addWidget(Widget *wid);
+
+
 };

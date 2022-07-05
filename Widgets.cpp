@@ -16,6 +16,8 @@ Widget::Widget(RenderWindow *win)
 	this->setSize(120, 80);
 
 	this->setPosition(0.0, 0.0);
+
+	Widget::addWidget(this);
 }
 
 Widget::Widget(RenderWindow *win, Size siz, Position pos, Color col)
@@ -28,6 +30,8 @@ Widget::Widget(RenderWindow *win, Size siz, Position pos, Color col)
 	this->setPosition(pos);
 
 	this->setColor(col);
+
+	Widget::addWidget(this);
 }
 
 Widget::Widget(RenderWindow *win, Size siz, Position pos)
@@ -38,6 +42,8 @@ Widget::Widget(RenderWindow *win, Size siz, Position pos)
 	this->setSize(siz);
 
 	this->setPosition(pos);
+
+	Widget::addWidget(this);
 }
 
 ///// Getters and Setters //////////////////////////////////////////////////////////
@@ -181,6 +187,30 @@ void Widget::runFunctions(sf::Event events)
 sf::RenderWindow* Widget::getWindow()
 {
 	return window;
+}
+
+int Widget::numWidgets = 0;
+Widget** Widget::allWidgets = new Widget*[0];
+
+void Widget::updateAll(Event event)
+{
+	for (int i = 0; i < numWidgets; i++)
+	{
+		allWidgets[i]->draw();
+		allWidgets[i]->runFunctions(event);
+	}
+}
+
+void Widget::addWidget(Widget* wid)
+{
+	numWidgets++;
+	
+	Widget** newWidgets = new Widget*[numWidgets];
+	for (int i = 0; i < numWidgets - 1; i++)
+		newWidgets[i] = allWidgets[i];
+	newWidgets[numWidgets - 1] = wid;
+
+	allWidgets = newWidgets;
 }
 
 //EventParam Widget::makeParam(sf::Event event)
