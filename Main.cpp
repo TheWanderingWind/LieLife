@@ -75,12 +75,15 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	//sprite.setColor(Color(160, 160, 160, 225));
 
 	Button::setTexture(texture_button);
-	Button button1(&win, Size(100, 40), Position(10, 10), "");
-	Button button2(&win, Size(100, 40), Position(120, 10), "");
-	Button button3(&win, Size(100, 40), Position(230, 10), "");
+	Button button1(&win, Size(180, 40), Position(10, 10), "");
+	Button button2(&win, Size(100, 40), Position(120, 100), "");
+	Button button3(&win, Size(200, 70), Position(230, 100), "");
 
-	Label::setFont(font_text);
-	Label label(&win, Size(100, 40), Position(130, 50), "Test text");
+	Label::setStandardFont(font_text);
+	Label label1(&win, Size(70, 30), Position(10, 10), "WFGH RDSC");
+	label1.setCharacterSize(30);
+	Label label2(&win, Size(100, 40), Position(130, 100), "Test text");
+	Label label3(&win, Size(200, 70), Position(230, 100), "Test text");
 
 	button1.bind(EventType::BUTTON_RIGTH_RELEASE, test1);
 	button1.bind(EventType::MOUSE_ENTER, test2);
