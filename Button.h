@@ -18,7 +18,7 @@ public:
 	/// <param name="col">-- widget color</param>
 	/// <param name="text">-- text in button</param>
 	Button(sf::RenderWindow* win, Size size = Size(0,0), Position position = Position(0, 0),
-		std::string text = "", sf::Color textColor = sf::Color::Black, 
+		std::string text = "", sf::Color textColor = sf::Color::Black,
 		sf::Color bgColor = sf::Color(225, 225, 225, 225));
 
 	/// <summary>
@@ -29,7 +29,7 @@ public:
 	/// <summary>
 	/// Setter button texture when pressed
 	/// </summary>
-	static void setTexturePresed(sf::Texture texture);
+	static void setTexturePressed(sf::Texture texture);
 
 	/// <summary>
 	/// Getter button texture in general
@@ -39,7 +39,7 @@ public:
 	/// <summary>
 	/// Getter button texture when pressed
 	/// </summary>
-	static sf::Texture getTexturePresed();
+	static sf::Texture getTexturePressed();
 
 	/// <summary>
 	/// Draw button

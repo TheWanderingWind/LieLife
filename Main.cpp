@@ -34,7 +34,8 @@ struct winSignals
 
 struct Resources
 {
-	Texture button;
+	Texture buttonReleased;
+	Texture buttonPressed;
 	Font font;
 };
 
@@ -65,38 +66,23 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	// Geting texture for button
 	while (!signals->readTexture) {}
 	signals->readTexture.store(false, std::memory_order_seq_cst);
-	Texture texture(res->button);	// texture for button
-	Texture& texture_button = texture;
+	Texture texture(res->buttonReleased);	// texture for button
+	Texture& texture_button_release = texture;
+	texture = Texture(res->buttonReleased);	// texture for button
+	Texture& texture_button_pressed = texture;
 	Font font(res->font);	// texture for button
 	Font& font_text= font;
 	signals->readTexture.store(true, std::memory_order_seq_cst);
 	
-	//Sprite sprite(texture_button);
-	//sprite.setColor(Color(160, 160, 160, 225));
-
-	Button::setTextureRelease(texture_button);
-	Button button1(&win, Size(180, 40), Position(10, 10), "");
-	Button button2(&win, Size(100, 40), Position(120, 100), "");
-	Button button3(&win, Size(200, 70), Position(230, 100), "");
-
+	// set standard resources
+	Button::setTextureRelease(texture_button_release);
+	Button::setTexturePressed(texture_button_pressed);
 	Label::setStandardFont(font_text);
-	Label label1(&win, Size(70, 30), Position(10, 10), "WFGH RDSC");
-	label1.setCharacterSize(30);
-	Label label2(&win, Size(100, 40), Position(130, 100), "Test text");
-	Label label3(&win, Size(200, 70), Position(230, 100), "Test text");
+	
+	// Initialization main widgets
+	Button button1(&win, Size(180, 40), Position(10, 10), "Very-very long-long string");
+	button1.setCharacterSize(16);
 
-	button1.bind(EventType::BUTTON_RIGTH_RELEASE, test1);
-	button1.bind(EventType::MOUSE_ENTER, test2);
-	button1.bind(EventType::MOUSE_EXIT, test3);
-	button1.bind(EventType::BUTTON_LEFT_PRESS, test4);
-	button2.bind(EventType::MOUSE_ENTER, [](EventParam param) -> void {
-		std::cout << "button2!" << std::endl;
-		});
-	button3.bind(EventType::MOUSE_EXIT, [](EventParam param) -> void {
-		std::cout << "button3!" << std::endl;
-		});
-
-	//button1.setTexture(texture_butt);
 
 	while (win.isOpen())
 	{
@@ -166,11 +152,17 @@ int main()
 	
 	std::cout << "Load resources...\n";
 	signals.readTexture.store(false, std::memory_order_seq_cst);
-	if (!resources.button.loadFromFile("Resources/Button.png"))
+	if (!resources.buttonReleased.loadFromFile("Resources/Button.png"))
 	{
-		std::cout << "Error read file (button texture).\n";
+		std::cout << "Error read file (button texture_release).\n";
 		std::cout << "Creating null texture.\n";
-		resources.button.create(120, 80);
+		resources.buttonReleased.create(120, 80);
+	}
+	if (!resources.buttonPressed.loadFromFile("Resources/ButtonPressed.png"))
+	{
+		std::cout << "Error read file (button texture_pressed).\n";
+		std::cout << "Creating null texture.\n";
+		resources.buttonPressed.create(120, 80);
 	}
 
 	if (!resources.font.loadFromFile("Resources/vgafixr.fon"))

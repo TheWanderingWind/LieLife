@@ -91,11 +91,16 @@ public:
 	/// </summary>
 	void draw();
 
+	void autoSizeProcess();
+
+
 protected:
 	/// <summary> text that show in window</summary>
 	std::string text;
 	/// <summary> text-object</summary>
 	sf::Text textObj;
+	/// <summary> text position in widget-box</summary>
+	Position textPosition;
 	/// <summary> standart font (style) of text</summary>
 	static sf::Font standardFont;
 	/// <summary> font (style) of text for this widget</summary>
