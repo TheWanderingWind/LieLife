@@ -2,58 +2,43 @@
 #include <string>
 
 #include "Button.h"
-#include "Widgets.h"
+#include "Label.h"
 
 using namespace sf;
 
-Texture Button::button_texture = Texture();
-Font Button::button_font = Font();
+Texture Button::textureReleased = Texture();
+Texture Button::texturePressed = Texture();
 
 ///// Constructs ///////////////////////////////////////////////////////////////////
 
-Button::Button(RenderWindow *win, Size size, Position position, std::string text)
-	: Widget(win, size, position)
+Button::Button(RenderWindow* win, Size size, Position position, 
+	std::string text, Color textColor, Color bgColor)
+	: Label(win, size, position, text, textColor)
 {
-	this->Widget::setTexture(button_texture);
-
-	this->text = text;
-}
-
-Button::Button(RenderWindow *win, Size size, Position position, std::string text, Color color)
-	: Widget(win, size, position, color)
-{
-	this->Widget::setTexture(button_texture);
-
-	this->text = text;
-}
-
-Button::Button(RenderWindow *win) : Widget(win)
-{
-	this->Widget::setTexture(button_texture);
-
-	this->text = "";
+	Widget::setTexture(textureReleased);
+	Widget::setColor(bgColor);
 }
 
 ///// Getters and Setters //////////////////////////////////////////////////////////
 
-Texture* Button::getTexture()
+void Button::setTextureRelease(Texture texture)
 {
-	return &button_texture;
+	Button::textureReleased = Texture(texture);
 }
 
-void Button::setTexture(Texture& texture)
+void Button::setTexturePresed(sf::Texture texture)
 {
-	button_texture = Texture(texture);
+	Button::texturePressed = Texture(texture);
 }
 
-Font* Button::getFont()
+sf::Texture Button::getTextureRelease()
 {
-	return &button_font;
+	return Texture(Button::textureReleased);
 }
 
-void Button::setFont(Font& font)
+sf::Texture Button::getTexturePresed()
 {
-	button_font = Font(font);
+	return Texture(Button::texturePressed);
 }
 
 ///// Functions ////////////////////////////////////////////////////////////////////

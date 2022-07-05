@@ -8,19 +8,7 @@ using namespace sf;
 
 ///// Constructs ///////////////////////////////////////////////////////////////////
 
-Widget::Widget(RenderWindow *win)
-{
-	this->window = win;
-	this->setTexture();
-
-	this->setSize(120, 80);
-
-	this->setPosition(0.0, 0.0);
-
-	Widget::addWidget(this);
-}
-
-Widget::Widget(RenderWindow *win, Size siz, Position pos, Color col)
+Widget::Widget(RenderWindow* win, Size siz, Position pos, Color color)
 {
 	this->window = win;
 	this->setTexture();
@@ -29,19 +17,7 @@ Widget::Widget(RenderWindow *win, Size siz, Position pos, Color col)
 
 	this->setPosition(pos);
 
-	this->setColor(col);
-
-	Widget::addWidget(this);
-}
-
-Widget::Widget(RenderWindow *win, Size siz, Position pos)
-{
-	this->window = win;
-	this->setTexture();
-
-	this->setSize(siz);
-
-	this->setPosition(pos);
+	this->setColor(color);
 
 	Widget::addWidget(this);
 }

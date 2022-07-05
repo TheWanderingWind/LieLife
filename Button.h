@@ -1,11 +1,11 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Widgets.h"
+#include "Label.h"
 
 /// <summary>
 /// Standard button class
 /// </summary>
-class Button : public Widget
+class Button : public Label
 {
 public:
 	/// <summary>
@@ -17,50 +17,29 @@ public:
 	/// <param name="position">-- position of button in window (in pixels)</param>
 	/// <param name="col">-- widget color</param>
 	/// <param name="text">-- text in button</param>
-	Button(sf::RenderWindow* win, Size size, Position position, std::string text, sf::Color color);
+	Button(sf::RenderWindow* win, Size size = Size(0,0), Position position = Position(0, 0),
+		std::string text = "", sf::Color textColor = sf::Color::Black, 
+		sf::Color bgColor = sf::Color(225, 225, 225, 225));
 
 	/// <summary>
-	/// Constructor
+	/// Setter button texture in general
 	/// </summary>
-	/// <param name="win">-- Window in whith to display</param>
-	/// <param name="texture">-- texture of button</param>
-	/// <param name="size">-- size of button (in pixels)</param>
-	/// <param name="position">-- position of button in window (in pixels)</param>
-	/// <param name="text">-- text in button</param>
-	Button(sf::RenderWindow *win, Size size, Position position, std::string text);
+	static void setTextureRelease(sf::Texture texture);
 
 	/// <summary>
-	/// Constructor without input settings
-	/// 
-	/// Standard settings:
-	/// Position: X=0; Y=0.
-	/// Size: width=120; height=80.
-	/// without Color
-	/// 
+	/// Setter button texture when pressed
 	/// </summary>
-	/// <param name="win">-- Window in whith to display</param>
-	/// <param name="texture">-- texture of button</param>
-	Button(sf::RenderWindow *win);
+	static void setTexturePresed(sf::Texture texture);
 
 	/// <summary>
-	/// Widget texture getter
+	/// Getter button texture in general
 	/// </summary>
-	static sf::Texture* getTexture();
+	static sf::Texture getTextureRelease();
 
 	/// <summary>
-	/// Widget texture setter
+	/// Getter button texture when pressed
 	/// </summary>
-	static void setTexture(sf::Texture& texture);
-
-	/// <summary>
-	/// Widget texture getter
-	/// </summary>
-	static sf::Font* getFont();
-
-	/// <summary>
-	/// Widget texture setter
-	/// </summary>
-	static void setFont(sf::Font& font);
+	static sf::Texture getTexturePresed();
 
 	/// <summary>
 	/// Draw button
@@ -68,14 +47,6 @@ public:
 	void draw();
 
 protected:
-	/// <summary>
-	/// Text in button
-	/// (don't work yet)
-	/// </summary>
-	std::string text;
-
-	static sf::Texture button_texture;
-
-	static sf::Font button_font;
-
+	static sf::Texture textureReleased;
+	static sf::Texture texturePressed;
 };

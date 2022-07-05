@@ -85,29 +85,8 @@ public:
 	/// <param name="siz">-- size of widget (in pixels)</param>
 	/// <param name="pos">-- position of widget in window (in pixels)</param>
 	/// <param name="col">-- widget color</param>
-	Widget(sf::RenderWindow *win, Size siz, Position pos, sf::Color col);
-
-	/// <summary>
-	/// Constructor
-	/// </summary>
-	/// <param name="win">-- Window in whith to display</param>
-	/// <param name="siz">-- size of widget (in pixels)</param>
-	/// <param name="pos">-- position of widget in window (in pixels)</param>
-	/// <param name="col">-- widget color</param>
-	Widget(sf::RenderWindow *win, Size siz, Position pos);
-
-	/// <summary>
-	/// Constructor without input settings
-	/// 
-	/// Standard settings:
-	/// Position: X=0; Y=0.
-	/// Size: width=120; height=80.
-	/// without Color
-	/// without Texture
-	/// 
-	/// </summary>
-	/// <param name="win">-- Window in whith to display</param>
-	Widget(sf::RenderWindow* win);
+	Widget(sf::RenderWindow* win, Size siz = Size(0, 0), 
+		Position pos = Position(0, 0), sf::Color color = sf::Color(225, 225, 225, 225));
 
 	/// <summary>
 	/// Widget size getter

@@ -15,42 +15,8 @@ public:
 	/// <param name="position">-- position of text in window (in pixels)</param>
 	/// <param name="col">-- widget color (color text?)</param>
 	/// <param name="text">-- text </param>
-	Label(sf::RenderWindow* win, Size size, Position position, std::string text, sf::Color textColor);
-
-	/// <summary>
-	/// Constructor
-	/// </summary>
-	/// <param name="win">-- Window in whith to display</param>
-	/// <param name="texture">-- texture of button</param>
-	/// <param name="size">-- size of text (in pixels?)</param>
-	/// <param name="position">-- position of text in window (in pixels)</param>
-	/// <param name="text">-- text</param>
-	Label(sf::RenderWindow* win, Size size, Position position, std::string text);
-
-	/// <summary>
-	/// Constructor without input settings
-	/// 
-	/// Standard settings:
-	/// Position: X=0; Y=0.
-	/// Size: width=120; height=80.
-	/// without Color
-	/// 
-	/// </summary>
-	/// <param name="win">-- Window in whith to display</param>
-	/// <param name="text">-- text</param>
-	Label(sf::RenderWindow* win, std::string text);
-
-	/// <summary>
-	/// Constructor without input settings
-	/// 
-	/// Standard settings:
-	/// Position: X=0; Y=0.
-	/// Size: width=120; height=80.
-	/// without Color
-	/// 
-	/// </summary>
-	/// <param name="win">-- Window in whith to display</param>
-	Label(sf::RenderWindow* win);
+	Label(sf::RenderWindow* win, Size size = Size(0, 0), Position position = Position(0, 0),
+		std::string text = "", sf::Color textColor = sf::Color::Black);
 
 	/// <summary>
 	/// Setter standart font

@@ -12,7 +12,8 @@ Font Label::standardFont = Font();
 
 ///// Constructs ///////////////////////////////////////////////////////////////////
 
-Label::Label(RenderWindow* win, Size size, Position position, std::string text, Color color)
+Label::Label(RenderWindow* win, Size size, Position position, 
+	std::string text, Color textColor)
 	: Widget(win, size, position)
 {
 	this->text = text;
@@ -22,42 +23,6 @@ Label::Label(RenderWindow* win, Size size, Position position, std::string text, 
 	textObj = Text(text, font);
 	textObj.setPosition(position.X, position.Y);
 	textObj.setFillColor(color);
-}
-
-Label::Label(RenderWindow *win, Size size, Position position, std::string text)
-	: Widget(win, size, position)
-{
-	this->text = text;
-	textColor = Color(Color::Black);
-	font = standardFont;
-
-	textObj = Text(text, font);
-	textObj.setPosition(position.X, position.Y);
-	textObj.setFillColor(textColor);
-}
-
-Label::Label(RenderWindow* win, std::string text) 
-	: Widget(win)
-{
-	this->text = text;
-	textColor = Color(Color::Black);
-	font = standardFont;
-
-	textObj = Text(text, font);
-	textObj.setPosition(position.X, position.Y);
-	textObj.setFillColor(textColor);
-}
-
-
-Label::Label(RenderWindow *win) : Widget(win)
-{
-	this->text = "";
-	textColor = Color(Color::Black);
-	font = standardFont;
-
-	textObj = Text(text, font);
-	textObj.setPosition(position.X, position.Y);
-	textObj.setFillColor(textColor);
 }
 
 ///// Getters and Setters //////////////////////////////////////////////////////////
