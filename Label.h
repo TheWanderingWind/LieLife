@@ -1,8 +1,8 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include "Widgets.h"
 
-
+template <typename T>
+struct BindedFunction;
 
 class Label : public Widget
 {
@@ -100,15 +100,17 @@ public:
 	/// <param name="fun"></param>
 	void bind(EventType type, void (*fun)(EventParam<Label> param));
 
-protected:
-	/// <summary> binded function with this widget </summary>
-	BindedFunction<Label> binded;
 	/// <summary>
 	/// Make parameters for using in binded functions
 	/// </summary>
 	/// <param name="event">Event object from SF, for getting some parameters</param>
 	/// <returns>EventParam object</returns>
-	EventParam<Label> makeParam(sf::Event event);
+	virtual void startUpdate(sf::Event event);
+	//EventParam<Label> makeParam(sf::Event event);
+
+protected:
+	/// <summary> binded function with this widget </summary>
+	BindedFunction<Label> binded;
 
 	/// <summary> text that show in window</summary>
 	std::string text;

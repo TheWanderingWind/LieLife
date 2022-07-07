@@ -1,6 +1,8 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include "Label.h"
+
+template <typename T>
+struct BindedFunction;
 
 /// <summary>
 /// Standard button class
@@ -53,15 +55,18 @@ public:
 	/// <param name="fun"></param>
 	void bind(EventType type, void (*fun)(EventParam<Button> param));
 
-protected:
-	/// <summary> binded function with this widget </summary>
-	BindedFunction<Button> binded;
 	/// <summary>
 	/// Make parameters for using in binded functions
 	/// </summary>
 	/// <param name="event">Event object from SF, for getting some parameters</param>
 	/// <returns>EventParam object</returns>
-	EventParam<Button> makeParam(sf::Event event);
+	virtual void startUpdate(sf::Event event);
+
+protected:
+	/// <summary> binded function with this widget </summary>
+	BindedFunction<Button> binded;
+
+	//EventParam<Button> makeParam(sf::Event event);
 
 	/// <summary> Standatd texture, when button released</summary>
 	static sf::Texture textureReleased;

@@ -1,8 +1,6 @@
-#include <SFML/Graphics.hpp>
 #include <string>
 
 #include "Label.h"
-#include "Widgets.h"
 
 using namespace sf;
 
@@ -114,7 +112,12 @@ void Label::bind(EventType type, void(*fun)(EventParam<Label>param))
 	this->binded.addFunct(type, fun);
 }
 
-EventParam<Label> Label::makeParam(sf::Event event)
+void Label::startUpdate(sf::Event event)
 {
-	return EventParam<Label>(*this, event);;
+	runFunctions(event, EventParam<Label>(*this, event), binded);
 }
+
+//EventParam<Label> Label::makeParam(sf::Event event)
+//{
+//	return EventParam<Label>(*this, event);;
+//}

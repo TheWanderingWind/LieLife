@@ -1,8 +1,8 @@
-#include <SFML/Graphics.hpp>
 #include <string>
 #include <iostream>
 
 #include "Widgets.h"
+
 
 using namespace sf;
 
@@ -100,75 +100,6 @@ void Widget::bind(EventType type, void(*fun)(EventParam<Widget> param))
 	binded.addFunct(type, fun);
 }
 
-template <typename T>
-void Widget::runFunctions(sf::Event events, EventParam<T> eve)
-{
-	//EventParam<Widget> eve = EventParam<Widget>(*this, events);
-
-	if ((eve.mousePosition.X == lastMousePosition.X) &&
-		(eve.mousePosition.Y == lastMousePosition.Y))
-	{	// Position of mouse was not changed
-		
-	}
-	else
-	{	// Position of mouse was changed
-		if ((eve.mousePosition.X > position.X) &&
-			(eve.mousePosition.Y > position.Y) &&
-			(eve.mousePosition.X < position.X + size.width) &&
-			(eve.mousePosition.Y < position.Y + size.height))
-		{	// mouse in widget now
-			if ((lastMousePosition.X > position.X) &&
-				(lastMousePosition.Y > position.Y) &&
-				(lastMousePosition.X < position.X + size.width) &&
-				(lastMousePosition.Y < position.Y + size.height))
-				// mouse was in widget before
-			{ }
-			else // mouse was not in widget before
-				binded.run(MOUSE_ENTER, eve);
-
-		} else { // mouse not in widget now
-			if ((lastMousePosition.X > position.X) &&
-				(lastMousePosition.Y > position.Y) &&
-				(lastMousePosition.X < position.X + size.width) &&
-				(lastMousePosition.Y < position.Y + size.height))
-				// mouse was in widget before
-				binded.run(MOUSE_EXIT, eve);
-		}
-	}
-
-	/// Not matter if mouse move
-	if ((events.type == sf::Event::MouseButtonPressed) && (buttonIsPresed == false))
-	{ // Mouse button presed
-		buttonIsPresed = true;
-		if ((eve.mousePosition.X > position.X) &&
-			(eve.mousePosition.Y > position.Y) &&
-			(eve.mousePosition.X < position.X + size.width) &&
-			(eve.mousePosition.Y < position.Y + size.height))
-		{	// mouse in widget now
-			if (events.mouseButton.button == 0)
-				binded.run(BUTTON_LEFT_PRESS, eve);
-			if (events.mouseButton.button == 1)
-				binded.run(BUTTON_RIGTH_PRESS, eve);
-		}	
-	}
-	if ((events.type == sf::Event::MouseButtonReleased) && (buttonIsPresed == true))
-	{ // Mouse button presed
-		buttonIsPresed = false;
-		if ((eve.mousePosition.X > position.X) &&
-			(eve.mousePosition.Y > position.Y) &&
-			(eve.mousePosition.X < position.X + size.width) &&
-			(eve.mousePosition.Y < position.Y + size.height))
-		{	// mouse in widget now
-			if (events.mouseButton.button == 0)
-				binded.run(BUTTON_LEFT_RELEASE, eve);
-			if (events.mouseButton.button == 1)
-				binded.run(BUTTON_RIGTH_RELEASE, eve);
-		}
-	}
-
-	lastMousePosition = eve.mousePosition;
-}
-
 sf::RenderWindow* Widget::getWindow()
 {
 	return window;
@@ -179,7 +110,8 @@ void Widget::updateAll(Event event)
 	for (int i = 0; i < numWidgets; i++)
 	{
 		allWidgets[i]->draw();
-		allWidgets[i]->runFunctions(event, allWidgets[i]->makeParam(event));
+		allWidgets[i]->startUpdate(event);
+		//allWidgets[i]->runFunctions(event, allWidgets[i]->makeParam(event));
 	}
 }
 
@@ -195,91 +127,7 @@ void Widget::addWidget(Widget* wid)
 	allWidgets = newWidgets;
 }
 
-EventParam<Widget> Widget::makeParam(sf::Event event)
+void Widget::startUpdate(sf::Event event)
 {
-	return EventParam<Widget>(*this, event);;
-}
-
-///// Binded function //////////////////////////////////////////////////////////////
-
-template <typename T>
-BindedFunction<T>::TypeAndFunc::TypeAndFunc(EventType type, void(*fun)(EventParam<T> param))
-{
-	mainType = type;
-	func = fun;
-}
-
-template <typename T>
-BindedFunction<T>::TypeAndFunc::TypeAndFunc()
-{
-	/// nothing
-}
-
-template <typename T>
-void BindedFunction<T>::addFunct(EventType type, void(*fun)(EventParam<T> param))
-{
-	TypeAndFunc* newArray = new TypeAndFunc[size + 1];
-
-	for (int i = 0; i < size; i++) { 
-		newArray[i] = TypeAndFunc(arrayFunc[i].mainType, arrayFunc[i].func);
-	}
-	newArray[size] = TypeAndFunc(type, fun);
-	size++;
-
-	delete arrayFunc;
-	arrayFunc = newArray;
-}
-
-template <typename T>
-void BindedFunction<T>::run(EventType type, EventParam<T> param)
-{
-	for (int i = 0; i < size; i++)
-	{
-		if (arrayFunc[i].mainType == type)
-			arrayFunc[i].func(param);
-	}
-}
-
-template <typename T>
-void BindedFunction<T>::deleteFunct(EventType type, void(*fun)(EventParam<T> param))
-{
-	int num = -1;
-	for (int i = 0; i < size; i++) // try find function to be remove
-	{
-		if (arrayFunc[i].mainType == type)
-			if (arrayFunc[i].func == fun)
-			{
-				num = i;
-				break;
-			}
-
-	}
-
-	if (num == -1) return; // if we don`t find
-
-	TypeAndFunc* newArray = new TypeAndFunc[size - 1];
-	for (int i = 0; i < num; i++)
-		newArray[i] = arrayFunc[i];
-	for (int i = num + 1; i < size; i++)
-		newArray[i - 1] = arrayFunc[i];
-
-	size--;
-	arrayFunc = newArray;
-}
-
-template<typename T>
-inline EventParam<T>::EventParam(T& wid, sf::Event event) : widget(wid)
-{
-	RenderWindow* window = wid.getWindow();
-
-	if ((window->getPosition().x < Mouse::getPosition().x - 8 && 
-		Mouse::getPosition().x - 8 < window->getPosition().x + window->getSize().x)
-		&& 
-		(window->getPosition().y < Mouse::getPosition().y - 30 &&
-		Mouse::getPosition().y - 30 < window->getPosition().y + window->getSize().y))
-		
-		mousePosition = Position(Mouse::getPosition().x - window->getPosition().x - 8, 
-								Mouse::getPosition().y - window->getPosition().y - 30);
-	else
-		mousePosition = Position(-1, -1);
+	runFunctions(event, EventParam<Widget>(*this, event), binded);
 }

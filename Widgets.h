@@ -1,122 +1,10 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include <iostream>
 
-/// <summary>
-/// Struct for storage position data (in pixels)
-/// </summary>
-struct Position
-{
-	float X, Y;
+#include "Resouce.h"
 
-	Position(float X, float Y)
-	{
-		this->X = X;
-		this->Y = Y;
-	}
 
-	Position()
-	{
-		this->X = 0;
-		this->Y = 0;
-	}
-};
-
-/// <summary>
-/// Struct for storage sie data (in pixels)
-/// </summary>
-struct Size
-{
-	int width, height;
-
-	Size(int wid, int hei)
-	{
-		this->width = wid;
-		this->height = hei;
-	}
-
-	Size()
-	{
-		this->height = 80;
-		this->width = 120;
-	}
-};
-
-/// <summary>
-/// Enum with types of events
-/// </summary>
-enum EventType
-{
-	BUTTON_LEFT_PRESS,
-	BUTTON_LEFT_RELEASE,
-	BUTTON_RIGTH_PRESS,
-	BUTTON_RIGTH_RELEASE,
-	MOUSE_ENTER,
-	MOUSE_EXIT,
-	KEY_PRESS,
-	KEY_RELEASE
-};
-
-// for correct making struct
-class Widget;
-
-/// <summary>
-/// Struct with parametrs of event (for making functions)
-/// </summary>
-template <typename T>
-struct EventParam
-{
-	T& widget;
-	Position mousePosition;
-
-	EventParam(T& wid, sf::Event event);
-};
-
-/// <summary>
-/// Struct with function and type event when run this function
-/// </summary>
-template <typename T>
-struct BindedFunction
-{
-private:
-	/// <summary>struct with just function and type</summary>
-	struct TypeAndFunc
-	{
-		EventType mainType;
-		void (*func) (EventParam<T> param);
-
-		TypeAndFunc(EventType type, void (*fun)(EventParam<T> param));
-		TypeAndFunc();
-	};
-
-	/// <summary>array of functions</summary>
-	TypeAndFunc* arrayFunc = new TypeAndFunc[0];
-	/// <summary> size of array </summary>
-	int size = 0;
-public:
-
-	/// <summary>
-	/// Add new function
-	/// </summary>
-	/// <param name="type">type of event when function must run</param>
-	/// <param name="fun">function to be run</param>
-	void addFunct(EventType type, void (*fun)(EventParam<T> param));
-
-	/// <summary>
-	/// Run function
-	/// </summary>
-	/// <param name="type">type of event that are binded</param>
-	/// <param name="param">parameters of event</param>
-	void run(EventType type, EventParam<T> param);
-
-	/// <summary>
-	/// Delete function
-	/// </summary>
-	/// <param name="type">type of event when function must run</param>
-	/// <param name="fun">function to be removed</param>
-	void deleteFunct(EventType type, void (*fun)(EventParam<T> param));
-};
 
 /// <summary>
 /// Base class for widgets
@@ -211,7 +99,7 @@ public:
 	/// (only for this widget!)
 	/// </summary>
 	template <typename T>
-	void runFunctions(sf::Event event, EventParam<T> eve = makeParam(event));
+	void runFunctions(sf::Event event, EventParam<T> eve, BindedFunction<T> binded);
 
 	// must be delete in future!
 	sf::RenderWindow* getWindow();
@@ -221,6 +109,14 @@ public:
 	/// </summary>
 	/// <param name="event">sf::Event - event-object</param>
 	static void updateAll(sf::Event event);
+
+	/// <summary> Last position of mouse </summary>
+	/// <summary>
+	/// Make parameters for using in binded functions
+	/// </summary>
+	/// <param name="event">Event object from SF, for getting some parameters</param>
+	/// <returns>EventParam object</returns>
+	virtual void startUpdate(sf::Event event);
 
 protected:
 	/// <summary> sprite of widget </summary>
@@ -236,16 +132,12 @@ protected:
 	Position position;
 	/// <summary> color of widget </summary>
 	sf::Color color;
-	/// <summary> binded function with this widget </summary>
 
+	/// <summary> binded function with this widget </summary>
 	BindedFunction<Widget> binded;
-	/// <summary> Last position of mouse </summary>
-	/// <summary>
-	/// Make parameters for using in binded functions
-	/// </summary>
-	/// <param name="event">Event object from SF, for getting some parameters</param>
-	/// <returns>EventParam object</returns>
-	EventParam<Widget> makeParam(sf::Event event);
+
+
+	//EventParam<Widget> makeParam(sf::Event event);
 	/// <summary> last position of mouse</summary>
 	Position lastMousePosition;
 	/// <summary> If button pressed now </summary>
@@ -264,3 +156,78 @@ private:
 	/// <param name="wid">new widget</param>
 	static void addWidget(Widget *wid);
 };
+
+template <typename T>
+void Widget::runFunctions(sf::Event events, EventParam<T> eve, BindedFunction<T> binded)
+{
+	//EventParam<Widget> eve = EventParam<Widget>(*this, events);
+
+	if ((eve.mousePosition.X == lastMousePosition.X) &&
+		(eve.mousePosition.Y == lastMousePosition.Y))
+	{	// Position of mouse was not changed
+
+	}
+	else
+	{	// Position of mouse was changed
+		if ((eve.mousePosition.X > position.X) &&
+			(eve.mousePosition.Y > position.Y) &&
+			(eve.mousePosition.X < position.X + size.width) &&
+			(eve.mousePosition.Y < position.Y + size.height))
+		{	// mouse in widget now
+			if ((lastMousePosition.X > position.X) &&
+				(lastMousePosition.Y > position.Y) &&
+				(lastMousePosition.X < position.X + size.width) &&
+				(lastMousePosition.Y < position.Y + size.height))
+				// mouse was in widget before
+			{
+			}
+			else // mouse was not in widget before
+				binded.run(MOUSE_ENTER, eve);
+
+		}
+		else { // mouse not in widget now
+			if ((lastMousePosition.X > position.X) &&
+				(lastMousePosition.Y > position.Y) &&
+				(lastMousePosition.X < position.X + size.width) &&
+				(lastMousePosition.Y < position.Y + size.height))
+				// mouse was in widget before
+				binded.run(MOUSE_EXIT, eve);
+		}
+	}
+
+	/// Not matter if mouse move
+	if ((events.type == sf::Event::MouseButtonPressed) && (buttonIsPresed == false))
+	{ // Mouse button presed
+		buttonIsPresed = true;
+		if ((eve.mousePosition.X > position.X) &&
+			(eve.mousePosition.Y > position.Y) &&
+			(eve.mousePosition.X < position.X + size.width) &&
+			(eve.mousePosition.Y < position.Y + size.height))
+		{	// mouse in widget now
+			if (events.mouseButton.button == 0)
+			{
+				binded.run(BUTTON_LEFT_PRESS, eve);
+			}
+			if (events.mouseButton.button == 1)
+				binded.run(BUTTON_RIGTH_PRESS, eve);
+		}
+	}
+	if ((events.type == sf::Event::MouseButtonReleased) && (buttonIsPresed == true))
+	{ // Mouse button presed
+		buttonIsPresed = false;
+		if ((eve.mousePosition.X > position.X) &&
+			(eve.mousePosition.Y > position.Y) &&
+			(eve.mousePosition.X < position.X + size.width) &&
+			(eve.mousePosition.Y < position.Y + size.height))
+		{	// mouse in widget now
+			if (events.mouseButton.button == 0)
+			{
+				binded.run(BUTTON_LEFT_RELEASE, eve);
+			}
+			if (events.mouseButton.button == 1)
+				binded.run(BUTTON_RIGTH_RELEASE, eve);
+		}
+	}
+
+	lastMousePosition = eve.mousePosition;
+}

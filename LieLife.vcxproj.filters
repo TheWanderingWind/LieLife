@@ -38,6 +38,9 @@
     <ClInclude Include="Label.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Resouce.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="x64\Debug\LieLife.exe" />

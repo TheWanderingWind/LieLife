@@ -1,8 +1,6 @@
-#include <SFML/Graphics.hpp>
 #include <string>
 
 #include "Button.h"
-#include "Label.h"
 
 using namespace sf;
 
@@ -11,16 +9,18 @@ Texture Button::texturePressed = Texture();
 
 ///// Constructs ///////////////////////////////////////////////////////////////////
 
-//void butPres(EventParam<Button> param)
-//{
-//	Texture n = Button::getTexturePressed();
-//	param.widget.setTexture(n);
-//}
-//void butReles(EventParam<Button> param)
-//{
-//	Texture n = Button::getTextureReleased();
-//	param.widget.setTexture(n);
-//}
+void butPres(EventParam<Button> param)
+{
+	Texture n = Button::getTexturePressed();
+	std::cout << "Press\n";
+	param.widget.setTexture(n);
+}
+void butReles(EventParam<Button> param)
+{
+	Texture n = Button::getTextureReleased();
+	std::cout << "Release\n";
+	param.widget.setTexture(n);
+}
 
 ///// Constructs ///////////////////////////////////////////////////////////////////
 
@@ -33,8 +33,8 @@ Button::Button(RenderWindow* win, Size size, Position position,
 
 	binded = BindedFunction<Button>();
 	
-	//bind(EventType::BUTTON_LEFT_PRESS, &butPres);
-	//bind(EventType::BUTTON_LEFT_RELEASE, &butReles);
+	bind(EventType::BUTTON_LEFT_PRESS, butPres);
+	bind(EventType::BUTTON_LEFT_RELEASE, butReles);
 }
 
 ///// Getters and Setters //////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ void Button::bind(EventType type, void(*fun)(EventParam<Button>param))
 	this->binded.addFunct(type, fun);
 }
 
-EventParam<Button> Button::makeParam(sf::Event event)
+void Button::startUpdate(sf::Event event)
 {
-	return EventParam<Button>(*this, event);
+	runFunctions(event, EventParam<Button>(*this, event), binded);
 }
