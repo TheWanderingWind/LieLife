@@ -66,18 +66,15 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	// Geting texture for button
 	while (!signals->readTexture) {}
 	signals->readTexture.store(false, std::memory_order_seq_cst);
-	Texture texture(res->buttonReleased);	// texture for button
-	Texture& texture_button_release = texture;
-	texture = Texture(res->buttonReleased);	// texture for button
-	Texture& texture_button_pressed = texture;
-	Font font(res->font);	// texture for button
-	Font& font_text= font;
-	signals->readTexture.store(true, std::memory_order_seq_cst);
+	// Start load resouces from memory
 	
 	// set standard resources
-	Button::setTextureReleased(texture_button_release);
-	Button::setTexturePressed(texture_button_pressed);
-	Label::setStandardFont(font_text);
+	Button::setTextureReleased(res->buttonReleased);
+	Button::setTexturePressed(res->buttonPressed);
+	Label::setStandardFont(res->font);
+	 
+	// End load resouces from memory
+	signals->readTexture.store(true, std::memory_order_seq_cst);
 	
 	// Initialization main widgets
 	Button button1(&win, Size(180, 40), Position(10, 10), "Very-very long-long string");
