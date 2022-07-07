@@ -82,11 +82,6 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	// Initialization main widgets
 	Button button1(&win, Size(180, 40), Position(10, 10), "Very-very long-long string");
 	button1.setCharacterSize(16);
-	//button1.bind(EventType::BUTTON_LEFT_RELEASE, [](EventParam<Button> param) {
-	//	Texture n = Button::getTextureReleased();
-	//	std::cout << "Reset\n";
-	//	param.widget.setTexture(n);
-	//	});
 
 
 	while (win.isOpen())
