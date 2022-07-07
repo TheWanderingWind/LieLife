@@ -6,6 +6,12 @@
 
 using namespace sf;
 
+///// Constants, value and other ///////////////////////////////////////////////////
+
+int Widget::numWidgets = 0;
+Widget** Widget::allWidgets = new Widget * [0];
+
+
 ///// Constructs ///////////////////////////////////////////////////////////////////
 
 Widget::Widget(RenderWindow* win, Size siz, Position pos, Color color)
@@ -20,6 +26,8 @@ Widget::Widget(RenderWindow* win, Size siz, Position pos, Color color)
 	this->setColor(color);
 
 	Widget::addWidget(this);
+
+	binded = BindedFunction<Widget>();
 }
 
 ///// Getters and Setters //////////////////////////////////////////////////////////
@@ -87,14 +95,15 @@ void Widget::draw()
 	this->window->draw(this->sprite);
 }
 
-void Widget::bind(EventType type, void(*fun)(EventParam param))
+void Widget::bind(EventType type, void(*fun)(EventParam<Widget> param))
 {
 	binded.addFunct(type, fun);
 }
 
-void Widget::runFunctions(sf::Event events)
+template <typename T>
+void Widget::runFunctions(sf::Event events, EventParam<T> eve)
 {
-	EventParam eve = EventParam(*this, events);
+	//EventParam<Widget> eve = EventParam<Widget>(*this, events);
 
 	if ((eve.mousePosition.X == lastMousePosition.X) &&
 		(eve.mousePosition.Y == lastMousePosition.Y))
@@ -165,15 +174,12 @@ sf::RenderWindow* Widget::getWindow()
 	return window;
 }
 
-int Widget::numWidgets = 0;
-Widget** Widget::allWidgets = new Widget*[0];
-
 void Widget::updateAll(Event event)
 {
 	for (int i = 0; i < numWidgets; i++)
 	{
 		allWidgets[i]->draw();
-		allWidgets[i]->runFunctions(event);
+		allWidgets[i]->runFunctions(event, allWidgets[i]->makeParam(event));
 	}
 }
 
@@ -189,30 +195,28 @@ void Widget::addWidget(Widget* wid)
 	allWidgets = newWidgets;
 }
 
-//EventParam Widget::makeParam(sf::Event event)
-//{
-//	EventParam eve = EventParam(*this, event);
-//	Vector2i vector = sf::Mouse::getPosition((Window)window);
-//
-//	eve.mousePosition = Position(event.mouseMove.x, event.mouseMove.y);
-//
-//	return eve;
-//}
+EventParam<Widget> Widget::makeParam(sf::Event event)
+{
+	return EventParam<Widget>(*this, event);;
+}
 
 ///// Binded function //////////////////////////////////////////////////////////////
 
-Widget::BindedFunction::TypeAndFunc::TypeAndFunc(EventType type, void(*fun)(EventParam param))
+template <typename T>
+BindedFunction<T>::TypeAndFunc::TypeAndFunc(EventType type, void(*fun)(EventParam<T> param))
 {
 	mainType = type;
 	func = fun;
 }
 
-Widget::BindedFunction::TypeAndFunc::TypeAndFunc()
+template <typename T>
+BindedFunction<T>::TypeAndFunc::TypeAndFunc()
 {
 	/// nothing
 }
 
-void Widget::BindedFunction::addFunct(EventType type, void(*fun)(EventParam param))
+template <typename T>
+void BindedFunction<T>::addFunct(EventType type, void(*fun)(EventParam<T> param))
 {
 	TypeAndFunc* newArray = new TypeAndFunc[size + 1];
 
@@ -226,7 +230,8 @@ void Widget::BindedFunction::addFunct(EventType type, void(*fun)(EventParam para
 	arrayFunc = newArray;
 }
 
-void Widget::BindedFunction::run(EventType type, EventParam param)
+template <typename T>
+void BindedFunction<T>::run(EventType type, EventParam<T> param)
 {
 	for (int i = 0; i < size; i++)
 	{
@@ -235,7 +240,8 @@ void Widget::BindedFunction::run(EventType type, EventParam param)
 	}
 }
 
-void Widget::BindedFunction::deleteFunct(EventType type, void(*fun)(EventParam param))
+template <typename T>
+void BindedFunction<T>::deleteFunct(EventType type, void(*fun)(EventParam<T> param))
 {
 	int num = -1;
 	for (int i = 0; i < size; i++) // try find function to be remove
@@ -261,7 +267,8 @@ void Widget::BindedFunction::deleteFunct(EventType type, void(*fun)(EventParam p
 	arrayFunc = newArray;
 }
 
-EventParam::EventParam(Widget &wid, sf::Event event) : widget(wid)
+template<typename T>
+inline EventParam<T>::EventParam(T& wid, sf::Event event) : widget(wid)
 {
 	RenderWindow* window = wid.getWindow();
 

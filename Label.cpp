@@ -28,6 +28,8 @@ Label::Label(RenderWindow* win, Size size, Position position,
 	std::cout << "top: " << data.top << " left: " << data.left << " height: " <<
 		data.height << " width: " << data.width << std::endl;
 	autoSizeProcess();
+
+	binded = BindedFunction<Label>();
 }
 
 ///// Getters and Setters //////////////////////////////////////////////////////////
@@ -105,4 +107,14 @@ void Label::autoSizeProcess()
 	textPosition.Y = (size.height - data.height) / 2 - 5;
 
 	textObj.setPosition(position.X + textPosition.X, position.Y + textPosition.Y);
+}
+
+void Label::bind(EventType type, void(*fun)(EventParam<Label>param))
+{
+	this->binded.addFunct(type, fun);
+}
+
+EventParam<Label> Label::makeParam(sf::Event event)
+{
+	return EventParam<Label>(*this, event);;
 }

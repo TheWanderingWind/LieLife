@@ -92,9 +92,24 @@ public:
 	void draw();
 
 	void autoSizeProcess();
-
+	
+	/// <summary>
+	/// Bind function
+	/// </summary>
+	/// <param name="type">Event type (when function must run)</param>
+	/// <param name="fun"></param>
+	void bind(EventType type, void (*fun)(EventParam<Label> param));
 
 protected:
+	/// <summary> binded function with this widget </summary>
+	BindedFunction<Label> binded;
+	/// <summary>
+	/// Make parameters for using in binded functions
+	/// </summary>
+	/// <param name="event">Event object from SF, for getting some parameters</param>
+	/// <returns>EventParam object</returns>
+	EventParam<Label> makeParam(sf::Event event);
+
 	/// <summary> text that show in window</summary>
 	std::string text;
 	/// <summary> text-object</summary>

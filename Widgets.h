@@ -64,12 +64,58 @@ class Widget;
 /// <summary>
 /// Struct with parametrs of event (for making functions)
 /// </summary>
+template <typename T>
 struct EventParam
 {
-	Widget& widget;
+	T& widget;
 	Position mousePosition;
 
-	EventParam(Widget& wid, sf::Event event);
+	EventParam(T& wid, sf::Event event);
+};
+
+/// <summary>
+/// Struct with function and type event when run this function
+/// </summary>
+template <typename T>
+struct BindedFunction
+{
+private:
+	/// <summary>struct with just function and type</summary>
+	struct TypeAndFunc
+	{
+		EventType mainType;
+		void (*func) (EventParam<T> param);
+
+		TypeAndFunc(EventType type, void (*fun)(EventParam<T> param));
+		TypeAndFunc();
+	};
+
+	/// <summary>array of functions</summary>
+	TypeAndFunc* arrayFunc = new TypeAndFunc[0];
+	/// <summary> size of array </summary>
+	int size = 0;
+public:
+
+	/// <summary>
+	/// Add new function
+	/// </summary>
+	/// <param name="type">type of event when function must run</param>
+	/// <param name="fun">function to be run</param>
+	void addFunct(EventType type, void (*fun)(EventParam<T> param));
+
+	/// <summary>
+	/// Run function
+	/// </summary>
+	/// <param name="type">type of event that are binded</param>
+	/// <param name="param">parameters of event</param>
+	void run(EventType type, EventParam<T> param);
+
+	/// <summary>
+	/// Delete function
+	/// </summary>
+	/// <param name="type">type of event when function must run</param>
+	/// <param name="fun">function to be removed</param>
+	void deleteFunct(EventType type, void (*fun)(EventParam<T> param));
 };
 
 /// <summary>
@@ -154,74 +200,29 @@ public:
 	virtual void draw();
 
 	/// <summary>
-	/// Struct with function and type event when run this function
-	/// </summary>
-	struct BindedFunction
-	{
-	private:
-		/// <summary>struct with just function and type</summary>
-		struct TypeAndFunc
-		{
-			EventType mainType;
-			void (*func) (EventParam param);
-
-			TypeAndFunc(EventType type, void (*fun)(EventParam param));
-			TypeAndFunc();
-		};
-
-		/// <summary>array of functions</summary>
-		TypeAndFunc* arrayFunc = new TypeAndFunc[0];
-		/// <summary> size of array </summary>
-		int size = 0;
-	public:
-
-		/// <summary>
-		/// Add new function
-		/// </summary>
-		/// <param name="type">type of event when function must run</param>
-		/// <param name="fun">function to be run</param>
-		void addFunct(EventType type, void (*fun)(EventParam param));
-
-		/// <summary>
-		/// Run function
-		/// </summary>
-		/// <param name="type">type of event that are binded</param>
-		/// <param name="param">parameters of event</param>
-		void run(EventType type, EventParam param);
-
-		/// <summary>
-		/// Delete function
-		/// </summary>
-		/// <param name="type">type of event when function must run</param>
-		/// <param name="fun">function to be removed</param>
-		void deleteFunct(EventType type, void (*fun)(EventParam param));
-	};
-
-	/// <summary>
 	/// Bind function
 	/// </summary>
 	/// <param name="type">Event type (when function must run)</param>
 	/// <param name="fun"></param>
-	void bind(EventType type, void (*fun)(EventParam param));
+	virtual void bind(EventType type, void (*fun)(EventParam<Widget> param));
 
 	/// <summary>
 	/// Checks the event type that occurred and run functions
+	/// (only for this widget!)
 	/// </summary>
-	void runFunctions(sf::Event event);
+	template <typename T>
+	void runFunctions(sf::Event event, EventParam<T> eve = makeParam(event));
 
 	// must be delete in future!
 	sf::RenderWindow* getWindow();
 
+	/// <summary>
+	/// Draw and run event function all widgets
+	/// </summary>
+	/// <param name="event">sf::Event - event-object</param>
 	static void updateAll(sf::Event event);
 
 protected:
-	/// <summary>
-	/// Make parameters for using in dinded functions
-	/// </summary>
-	/// <param name="event">Event object from SF, for getting some parameters</param>
-	/// <returns>EventParam object</returns>
-	EventParam makeParam(sf::Event event);
-
 	/// <summary> sprite of widget </summary>
 	sf::Sprite sprite;
 	/// <summary> texture of widget </summary>
@@ -236,19 +237,30 @@ protected:
 	/// <summary> color of widget </summary>
 	sf::Color color;
 	/// <summary> binded function with this widget </summary>
-	BindedFunction binded;
+
+	BindedFunction<Widget> binded;
 	/// <summary> Last position of mouse </summary>
+	/// <summary>
+	/// Make parameters for using in binded functions
+	/// </summary>
+	/// <param name="event">Event object from SF, for getting some parameters</param>
+	/// <returns>EventParam object</returns>
+	EventParam<Widget> makeParam(sf::Event event);
+	/// <summary> last position of mouse</summary>
 	Position lastMousePosition;
 	/// <summary> If button pressed now </summary>
 	bool buttonIsPresed = false;
 
 private:
+	/// <summary> Special constructor for making null-widget in arrays</summary>
 	Widget();
-
+	/// <summary> array whith all widgets (links)</summary>
 	static Widget** allWidgets;
+	/// <summary> number of widgets in array</summary>
 	static int numWidgets;
-
+	/// <summary>
+	/// Add new widget (link) to array
+	/// </summary>
+	/// <param name="wid">new widget</param>
 	static void addWidget(Widget *wid);
-
-
 };

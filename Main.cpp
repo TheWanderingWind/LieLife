@@ -43,18 +43,18 @@ winParam param;
 winSignals signals;
 Resources resources;
 
-void test1(EventParam param) {
-	std::cout << "MOUSE_ENTER_1" << std::endl;
-}
-void test2(EventParam param) {
-	std::cout << "MOUSE_ENTER_2" << std::endl;
-}
-void test3(EventParam param) {
-	std::cout << "MOUSE_EXIT_3" << std::endl;
-}
-void test4(EventParam param) {
-	std::cout << "MOUSE_EXIT_4" << std::endl;
-}
+//void test1(EventParam param) {
+//	std::cout << "MOUSE_ENTER_1" << std::endl;
+//}
+//void test2(EventParam param) {
+//	std::cout << "MOUSE_ENTER_2" << std::endl;
+//}
+//void test3(EventParam param) {
+//	std::cout << "MOUSE_EXIT_3" << std::endl;
+//}
+//void test4(EventParam param) {
+//	std::cout << "MOUSE_EXIT_4" << std::endl;
+//}
 
 // Main window cycle
 int threadWindow(winParam* param, winSignals* signals, Resources* res)
@@ -75,7 +75,7 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	signals->readTexture.store(true, std::memory_order_seq_cst);
 	
 	// set standard resources
-	Button::setTextureRelease(texture_button_release);
+	Button::setTextureReleased(texture_button_release);
 	Button::setTexturePressed(texture_button_pressed);
 	Label::setStandardFont(font_text);
 	

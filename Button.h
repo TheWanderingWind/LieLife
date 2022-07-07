@@ -24,7 +24,7 @@ public:
 	/// <summary>
 	/// Setter button texture in general
 	/// </summary>
-	static void setTextureRelease(sf::Texture texture);
+	static void setTextureReleased(sf::Texture texture);
 
 	/// <summary>
 	/// Setter button texture when pressed
@@ -34,7 +34,7 @@ public:
 	/// <summary>
 	/// Getter button texture in general
 	/// </summary>
-	static sf::Texture getTextureRelease();
+	static sf::Texture getTextureReleased();
 
 	/// <summary>
 	/// Getter button texture when pressed
@@ -46,7 +46,26 @@ public:
 	/// </summary>
 	void draw();
 
+	/// <summary>
+	/// Bind function
+	/// </summary>
+	/// <param name="type">Event type (when function must run)</param>
+	/// <param name="fun"></param>
+	void bind(EventType type, void (*fun)(EventParam<Button> param));
+
 protected:
+	/// <summary> binded function with this widget </summary>
+	BindedFunction<Button> binded;
+	/// <summary>
+	/// Make parameters for using in binded functions
+	/// </summary>
+	/// <param name="event">Event object from SF, for getting some parameters</param>
+	/// <returns>EventParam object</returns>
+	EventParam<Button> makeParam(sf::Event event);
+
+	/// <summary> Standatd texture, when button released</summary>
 	static sf::Texture textureReleased;
+	/// <summary> Standatd texture, when button pressed</summary>
 	static sf::Texture texturePressed;
+
 };
