@@ -7,28 +7,28 @@ struct BindedFunction;
 class Label : public Widget
 {
 public:
+	//////////////////////////////////////////////////////////////////////////////
+	// Constructions
+	//////////////////////////////////////////////////////////////////////////////
+
 	/// <summary>
 	/// Constructor
 	/// </summary>
-	/// <param name="win">-- Window in whith to display</param>
-	/// <param name="size">-- size of text (in pixels?)</param>
-	/// <param name="position">-- position of text in window (in pixels)</param>
-	/// <param name="col">-- widget color (color text?)</param>
-	/// <param name="text">-- text </param>
+	/// <param name="win"> Window in whith to display</param>
+	/// <param name="size"> size of widget-box (in pixels)</param>
+	/// <param name="position"> position of label in window (in pixels)</param>
+	/// <param name="text"> text in label </param>
+	/// <param name="textColor"> color text</param>
+	/// <param name="ñolor"> color background</param>
 	Label(sf::RenderWindow* win, Size size = Size(0, 0), Position position = Position(0, 0),
-		std::string text = "", sf::Color textColor = sf::Color::Black);
+		std::string text = "", sf::Color textColor = sf::Color::Black, 
+		sf::Color color = sf::Color(225, 225, 225, 225));
 
-	/// <summary>
-	/// Setter standart font
-	/// </summary>
-	/// <param name="font">new font</param>
-	static void setStandardFont(sf::Font& font);
 
-	/// <summary>
-	/// Setter font for this widget
-	/// </summary>
-	/// <param name="font">new font</param>
-	void setFont(sf::Font& font);
+
+	//////////////////////////////////////////////////////////////////////////////
+	// Setters and Getters
+	//////////////////////////////////////////////////////////////////////////////
 
 	/// <summary>
 	/// Getter font (from this widget)
@@ -37,10 +37,20 @@ public:
 	sf::Font getFont();
 
 	/// <summary>
-	/// Setter text
+	/// Setter font for this widget
 	/// </summary>
-	/// <param name="str">new text</param>
-	void setText(std::string str);
+	/// <param name="font">new font</param>
+	void setFont(sf::Font& font);
+
+	/// Static ///////////////////////////////////////////////////////////////////
+	/// 
+	/// <summary>
+	/// Setter standart font
+	/// </summary>
+	/// <param name="font">new font</param>
+	static void setStandardFont(sf::Font& font);
+	///
+	//////////////////////////////////////////////////////////////////////////////
 
 	/// <summary>
 	/// Getter text
@@ -49,23 +59,22 @@ public:
 	std::string getText();
 
 	/// <summary>
-	/// Setter for text color
+	/// Setter text
 	/// </summary>
-	/// <param name="col">new color for text</param>
-	void setTextColor(sf::Color col);
+	/// <param name="str">new text</param>
+	void setText(std::string str);
 
 	/// <summary>
 	/// Getter color of text
 	/// </summary>
 	/// <returns>sf::Color - color of text in widget</returns>
 	sf::Color getTextColot();
-	
+
 	/// <summary>
-	/// Setter character size.
-	/// Note, that not all font can be seted any size! 
+	/// Setter for text color
 	/// </summary>
-	/// <param name="size">new character size (in pixels)</param>
-	void setCharacterSize(int size);
+	/// <param name="col">new color for text</param>
+	void setTextColor(sf::Color col);
 
 	/// <summary>
 	/// Getter character size
@@ -74,11 +83,11 @@ public:
 	int getCharacterSize();
 
 	/// <summary>
-	/// Setter style for text
-	/// (see more in sf::Text)
+	/// Setter character size.
+	/// Note, that not all font can be seted any size! 
 	/// </summary>
-	/// <param name="style">new style</param>
-	void setStyle(sf::Uint32 style);
+	/// <param name="size">new character size (in pixels)</param>
+	void setCharacterSize(int size);
 
 	/// <summary>
 	/// Getter text style
@@ -87,26 +96,52 @@ public:
 	sf::Uint32 getStyle();
 
 	/// <summary>
+	/// Setter style for text
+	/// (see more in sf::Text)
+	/// </summary>
+	/// <param name="style">new style</param>
+	void setStyle(sf::Uint32 style);
+
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	// Functions
+	//////////////////////////////////////////////////////////////////////////////
+	
+	/// <summary>
 	/// Draw label
 	/// </summary>
-	void draw();
+	void draw() override;
 
-	void autoSizeProcess();
+	/// <summary>
+	/// Set position character to center of widget-box (size widget)
+	/// </summary>
+	void autoTextPosition();
 	
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	// Functions for bind and run binded functions
+	//////////////////////////////////////////////////////////////////////////////
+
 	/// <summary>
 	/// Bind function
 	/// </summary>
 	/// <param name="type">Event type (when function must run)</param>
-	/// <param name="fun"></param>
+	/// <param name="fun">function worth run</param>
 	void bind(EventType type, void (*fun)(EventParam<Label> param));
 
 	/// <summary>
-	/// Make parameters for using in binded functions
+	/// Make parameters for using in binded functions and setup runFunction()
 	/// </summary>
 	/// <param name="event">Event object from SF, for getting some parameters</param>
-	/// <returns>EventParam object</returns>
-	virtual void startUpdate(sf::Event event);
-	//EventParam<Label> makeParam(sf::Event event);
+	void startUpdate(sf::Event event) override;
+
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	// Fields and constants 
+	//////////////////////////////////////////////////////////////////////////////
 
 protected:
 	/// <summary> binded function with this widget </summary>
@@ -118,13 +153,18 @@ protected:
 	sf::Text textObj;
 	/// <summary> text position in widget-box</summary>
 	Position textPosition;
-	/// <summary> standart font (style) of text</summary>
-	static sf::Font standardFont;
+	/// <summary> size of character</summary>
+	int characterSize;
 	/// <summary> font (style) of text for this widget</summary>
 	sf::Font font;
 	/// <summary> Color of text</summary>
 	sf::Color textColor;
-	/// <summary> size of character</summary>
-	int characterSize;
+	
+	/// Static ///////////////////////////////////////////////////////////////////
+	/// 
+	/// <summary> standart font (style) of text</summary>
+	static sf::Font standardFont;
+	///
+	//////////////////////////////////////////////////////////////////////////////
 };
 

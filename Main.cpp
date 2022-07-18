@@ -7,6 +7,7 @@
 #include "Widgets.h"
 #include "Label.h"
 #include "Button.h"
+#include "Entry.h"
 
 using namespace sf;
 
@@ -43,19 +44,6 @@ winParam param;
 winSignals signals;
 Resources resources;
 
-//void test1(EventParam param) {
-//	std::cout << "MOUSE_ENTER_1" << std::endl;
-//}
-//void test2(EventParam param) {
-//	std::cout << "MOUSE_ENTER_2" << std::endl;
-//}
-//void test3(EventParam param) {
-//	std::cout << "MOUSE_EXIT_3" << std::endl;
-//}
-//void test4(EventParam param) {
-//	std::cout << "MOUSE_EXIT_4" << std::endl;
-//}
-
 // Main window cycle
 int threadWindow(winParam* param, winSignals* signals, Resources* res)
 {
@@ -79,6 +67,12 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	// Initialization main widgets
 	Button button1(&win, Size(180, 40), Position(10, 10), "Very-very long-long string");
 	button1.setCharacterSize(16);
+
+	button1.bind(KEY_PRESS, [](EventParam<Button> param) {
+		std::cout << "pressed key: " << param.sumbol << std::endl;
+		});
+
+	Entry entry1(&win, Size(200, 30), Position(40, 200));
 
 
 	while (win.isOpen())
@@ -137,7 +131,7 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 
 		win.clear(Color(67, 67, 67, 33));
 		
-		button1.updateAll(event);
+		Widget::updateAll(event);
 		win.display();
 	}
 }

@@ -119,6 +119,15 @@ private:
 public:
 
 	/// <summary>
+	/// Getter size of function array
+	/// </summary>
+	/// <returns></returns>
+	int getSize()
+	{
+		return size;
+	}
+
+	/// <summary>
 	/// Add new function
 	/// </summary>
 	/// <param name="type">type of event when function must run</param>

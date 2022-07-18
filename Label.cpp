@@ -4,15 +4,21 @@
 
 using namespace sf;
 
-///// Static fields ////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+///// Static constants, values and functions /////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 Font Label::standardFont = Font();
 
-///// Constructs ///////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////
+///// Constructions //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 Label::Label(RenderWindow* win, Size size, Position position, 
-	std::string text, Color textColor)
-	: Widget(win, size, position)
+	std::string text, Color textColor, Color ñolor)
+	: Widget(win, size, position, ñolor)
 {
 	this->text = text;
 	this->textColor = textColor;
@@ -25,12 +31,21 @@ Label::Label(RenderWindow* win, Size size, Position position,
 	FloatRect data = textObj.getGlobalBounds();
 	std::cout << "top: " << data.top << " left: " << data.left << " height: " <<
 		data.height << " width: " << data.width << std::endl;
-	autoSizeProcess();
+	autoTextPosition();
 
 	binded = BindedFunction<Label>();
 }
 
-///// Getters and Setters //////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////
+///// Getters and Setters ////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+Font Label::getFont()
+{
+	return Font(font);
+}
 
 void Label::setStandardFont(sf::Font& font)
 {
@@ -42,9 +57,9 @@ void Label::setFont(Font& font)
 	this->font = Font(font);
 }
 
-Font Label::getFont()
+std::string Label::getText()
 {
-	return Font(font);
+	return text;
 }
 
 void Label::setText(std::string str)
@@ -53,9 +68,9 @@ void Label::setText(std::string str)
 	textObj.setString(str);
 }
 
-std::string Label::getText()
+sf::Color Label::getTextColot()
 {
-	return text;
+	return sf::Color(textColor);
 }
 
 void Label::setTextColor(sf::Color col)
@@ -64,26 +79,16 @@ void Label::setTextColor(sf::Color col)
 	textObj.setFillColor(textColor);
 }
 
-sf::Color Label::getTextColot()
+int Label::getCharacterSize()
 {
-	return sf::Color(textColor);
+	return characterSize;
 }
 
 void Label::setCharacterSize(int size)
 {
 	characterSize = size;
 	textObj.setCharacterSize(characterSize);
-	autoSizeProcess();
-}
-
-int Label::getCharacterSize()
-{
-	return characterSize;
-}
-
-void Label::setStyle(sf::Uint32 style)
-{
-	textObj.setStyle(style);
+	autoTextPosition();
 }
 
 sf::Uint32 Label::getStyle()
@@ -91,14 +96,23 @@ sf::Uint32 Label::getStyle()
 	return textObj.getStyle();
 }
 
-///// Functions ////////////////////////////////////////////////////////////////////
+void Label::setStyle(sf::Uint32 style)
+{
+	textObj.setStyle(style);
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+///// Functions //////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 void Label::draw()
 {
 	window->draw(textObj);
 }
 
-void Label::autoSizeProcess()
+void Label::autoTextPosition()
 {
 	FloatRect data = textObj.getGlobalBounds();
 	textPosition.X = (size.width - data.width) / 2;
@@ -107,17 +121,19 @@ void Label::autoSizeProcess()
 	textObj.setPosition(position.X + textPosition.X, position.Y + textPosition.Y);
 }
 
+
+
+//////////////////////////////////////////////////////////////////////////////
+///// Functions for bind and run binded functions ////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
 void Label::bind(EventType type, void(*fun)(EventParam<Label>param))
 {
 	this->binded.addFunct(type, fun);
 }
 
-void Label::startUpdate(sf::Event event)
+void Label::startUpdate(sf::Event event) 
 {
+	Widget::startUpdate(event);
 	runFunctions(event, EventParam<Label>(*this, event), binded);
 }
-
-//EventParam<Label> Label::makeParam(sf::Event event)
-//{
-//	return EventParam<Label>(*this, event);;
-//}
