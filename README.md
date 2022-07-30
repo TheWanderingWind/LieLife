@@ -6,16 +6,16 @@
 
 SFML is a graphic library that provides tools for simple graphics creation, such as for video games.
 But this library does not have tools for convenient and simple creation of a normal program.
-Therefore, in this branch, tools are beging developed for simple construction of the graphical interface of a regular program.
+Therefore, in this branch, tools are being developed for simple construction of the graphical interface of a regular program.
 
 The "organization style" of objects is inspired by the standard Python graphics library tkinter.
 
 
 ### Development
 This project does not intend to implement a completely similar toolkit with tkinter, only:
-- [x] *Widget*  - base class (widget), whith has implementation of all common widget capabilities;
+- [x] *Widget*  - base class (widget), that has implementation of all common widget capabilities;
 - [x] *Label*   - caption that displays the text on the screen;
-- [x] *Button*  - button that to treggers events;
+- [x] *Button*  - button that to triggers events;
 - [ ] *Entry*   - field in which you can enter information;
 - [ ] *PopInfo (pop-up information)*  - pop-up window with additional information (for example, to display explanations for terms);
 - [x] *system of binding functions to widgets*  - binding of functions that will be call when an event occurs with widgets;
