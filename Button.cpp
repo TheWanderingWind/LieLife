@@ -48,6 +48,8 @@ Button::Button(RenderWindow* win, Size size, Position position,
 	
 	bind(EventType::BUTTON_LEFT_PRESS, butPres);
 	bind(EventType::BUTTON_LEFT_RELEASE, butReles);
+
+	canBeFocus = true;
 }
 
 

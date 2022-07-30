@@ -25,6 +25,11 @@ public:
 	Widget(sf::RenderWindow* win, Size siz = Size(0, 0), 
 		Position pos = Position(0, 0), sf::Color color = sf::Color(225, 225, 225, 225));
 
+	/// <summary>
+	/// Destructor
+	/// </summary>
+	~Widget();
+
 private:
 	/// <summary>
 	/// Special constructor for making null-widget in arrays
@@ -103,6 +108,35 @@ public:
 	/// </summary>
 	sf::RenderWindow* getWindow();
 
+	/// <summary>
+	/// Getter widget focus
+	/// </summary>
+	bool getFocus();
+
+	/// <summary>
+	/// Setter widget focus
+	/// </summary>
+	void setFocus(bool focus);
+	
+	/// <summary>
+	/// Getter can be widget focus
+	/// </summary>
+	bool getCanBeFocus();
+
+	/// <summary>
+	/// Setter can be widget focus
+	/// </summary>
+	void setCanBeFocus(bool canBe);
+
+	/// Static ///////////////////////////////////////////////////////////////////
+	/// 
+	/// <summary>
+	/// Getter focused widget link
+	/// </summary>
+	static Widget& getFocused();
+	/// 
+	//////////////////////////////////////////////////////////////////////////////
+
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -122,6 +156,12 @@ private:
 	/// </summary>
 	/// <param name="wid">new widget</param>
 	static void addWidget(Widget* wid);
+	///
+	/// <summary>
+	/// delete widget from array
+	/// </summary>
+	/// <param name="id">id of widget that shoud delete</param>
+	static void deleteWidget(int id);
 	/// 
 	//////////////////////////////////////////////////////////////////////////////
 
@@ -164,11 +204,11 @@ protected:
 
 
 
+protected:
 	//////////////////////////////////////////////////////////////////////////////
 	// Fields and constants 
 	//////////////////////////////////////////////////////////////////////////////
 
-protected:
 	/// <summary> link to the window in wich the widget is located </summary>
 	sf::RenderWindow* window;
 
@@ -191,10 +231,17 @@ protected:
 	/// <summary> If button pressed now </summary>
 	bool buttonIsPresed = false;
 
+	/// <summary> this widget in focus?</summary>
+	bool isFocus;
+	/// <summary> this widget can be focus?</summary>
+	bool canBeFocus;
 
-private:
 	/// Static ///////////////////////////////////////////////////////////////////
 	/// 
+	/// <summary> Widget that in focus now </summary>
+	static Widget& focused;
+	/// 
+private:
 	/// <summary> array whith all widgets (links)</summary>
 	static Widget** allWidgets;
 	/// <summary> number of widgets in array</summary>
@@ -202,6 +249,8 @@ private:
 	///
 	//////////////////////////////////////////////////////////////////////////////
 	
+	// Id of widget
+	int id;
 };
 
 template <typename T>
@@ -258,6 +307,14 @@ void Widget::runFunctions(sf::Event events, EventParam<T> eve, BindedFunction<T>
 			if (events.mouseButton.button == 0)
 			{	// pressed button # 0 (left button)
 				binded.run(BUTTON_LEFT_PRESS, eve);
+
+				//if (eve.widget.getCanBeFocus() == true)
+				//{
+				//	if (eve.widget.getFocus() == false)
+				//	{
+				//		focused.
+				//	}
+				//}
 			}
 			if (events.mouseButton.button == 1)
 			{	// pressed button # 1 (ridth button)
@@ -284,3 +341,4 @@ void Widget::runFunctions(sf::Event events, EventParam<T> eve, BindedFunction<T>
 		}
 	}
 }
+

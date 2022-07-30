@@ -12,18 +12,48 @@ using namespace sf;
 
 int Widget::numWidgets = 0;
 
-Widget** Widget::allWidgets = new Widget * [0];
+// make first element null-widget for focus
+Widget** Widget::allWidgets = new Widget * [1];
+
+Widget& Widget::focused = *Widget::allWidgets[0];
 
 void Widget::addWidget(Widget* wid)
 {
 	numWidgets++;
+	int id = 0;
 
 	Widget** newWidgets = new Widget * [numWidgets];
 	for (int i = 0; i < numWidgets - 1; i++)
+	{
 		newWidgets[i] = allWidgets[i];
+		if (allWidgets[i]->id == id)
+			id++;
+	}
 	newWidgets[numWidgets - 1] = wid;
+	wid->id = id;
 
 	allWidgets = newWidgets;
+}
+
+void Widget::deleteWidget(int id)
+{
+	for (int d = 0; d < numWidgets; d++)
+	{
+		if (allWidgets[d]->id == id)
+		{
+			numWidgets--;
+
+			Widget** newWidgets = new Widget * [numWidgets];
+			
+			for (int i = 0;		i < d;	i++)
+				newWidgets[i] = allWidgets[i];
+
+			for (int i = d+1;	i < numWidgets+1;	i++)
+				newWidgets[i - 1] = allWidgets[i];
+
+			allWidgets = newWidgets;
+		}
+	}
 }
 
 void Widget::updateAll(Event event)
@@ -35,6 +65,11 @@ void Widget::updateAll(Event event)
 	}
 }
 
+Widget& Widget::getFocused()
+{
+	return focused;
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -43,23 +78,28 @@ void Widget::updateAll(Event event)
 
 Widget::Widget(RenderWindow* win, Size siz, Position pos, Color color)
 {
-	this->window = win;
-	this->setCreateTexture();
+	window = win;
+	setCreateTexture();
 
-	this->setSize(siz);
-
-	this->setPosition(pos);
-
-	this->setColor(color);
+	setSize(siz);
+	setPosition(pos);
+	setColor(color);
 
 	Widget::addWidget(this);
-
 	binded = BindedFunction<Widget>();
+	isFocus = false;
+	canBeFocus = false;
 }
 
 Widget::Widget()
 {
+	Widget::addWidget(this);
 	// just null widget
+}
+
+Widget::~Widget()
+{
+	deleteWidget(this->id);
 }
 
 
@@ -125,6 +165,35 @@ void Widget::setCreateTexture()
 }
 
 sf::RenderWindow* Widget::getWindow() { return window; }
+
+bool Widget::getFocus() { return isFocus; }
+
+void Widget::setFocus(bool focus)
+{
+	if (focus)
+	{	// set this widget in focus
+		isFocus = true;
+		focused = *this;
+	}
+	else
+	{	// set this widget out of focus
+		if (focused.id == id)	
+		{ // this widget is focused now
+			focused = *allWidgets[0]; // set null widget in focus
+			isFocus = false;
+		}
+		// else this widget not in focus, so no action is required
+	}
+}
+
+bool Widget::getCanBeFocus() { return canBeFocus; }
+
+void Widget::setCanBeFocus(bool canBe)
+{
+	canBeFocus = canBe;
+	if (canBe == false) setFocus(false);
+}
+
 
 
 

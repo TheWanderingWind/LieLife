@@ -56,7 +56,9 @@ enum EventType
 	MOUSE_ENTER,
 	MOUSE_EXIT,
 	KEY_PRESS,
-	KEY_RELEASE
+	KEY_RELEASE,
+	GET_FOCUS,
+	LOST_FOCUS
 };
 
 // if pressed key now?

@@ -13,6 +13,8 @@ Entry::Entry(RenderWindow* win, Size size, Position position,
 	Color textColor)
 	:Label(win, size, position, "", textColor)
 {
+	canBeFocus = true;
+
 	//bind(KEY_PRESS, [](EventParam<Entry> param) {
 	//	if (param.isFocus) {
 	//		std::string tex = param.widget.getText();
