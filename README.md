@@ -3,28 +3,28 @@
 ##### in English
 ## General information
 
-The goal of progect development is to training and demonstrate programming skills. The progect is NOT commercial.
+The goal of project development is to training and demonstrate programming skills. The project is NOT commercial.
 
-The progect is inspired by Jonson Conway's cage automaton called **Conway's Game of Life**, 1970.
+The project is inspired by Jonson Conway's cage automaton called **Conway's Game of Life**, 1970.
 **Game of Life** aims to simulate the behavior of cells depending on the presence of living cells around them (you can learn more [here](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life))
 
 LieLife aims to make a more believable simulation of life and demonstrate the principle of evolution.
-The world will also consist of some splace where a cell can be placed.
-Each cell will have so-called genome is a sequence of codes, each of wthich indicates a command that the cell will carry out
+The world will also consist of some place where a cell can be placed.
+Each cell will have so-called genome is a sequence of codes, each of which indicates a command that the cell will carry out
 (for example, the photosynthesis code will tell the cell to get energy from the sun).
 Sometimes the cell will divide, creating a copy of itself in the free space near it.
-Sometimes a mutation will happen - the new cell will have a slightly changes genome, which can completely change the behevior of the cell.
+Sometimes a mutation will happen - the new cell will have a slightly changes genome, which can completely change the behavior of the cell.
 
 The progect is not intended to demonstrate plausible simulations. Just to make a demonstration of the evolution process.
 
 
 ## Development
 
-The development uses the graphic libery [SFML](https://www.sfml-dev.org/index.php) for C++. The progect developed in C++.
+The development uses the graphic library [SFML](https://www.sfml-dev.org/index.php) for C++. The progect developed in C++.
 
-The develompment of the progect is generally divided into 2 main parts:
-- develompment graphic part
-- develompment of simulation implementation
+The development of the project is generally divided into 2 main parts:
+- development graphic part
+- development of simulation implementation
 
 The main parts will be developed in the respective branch [*graphic*](https://github.com/TheWanderingWind/LieLife/tree/graphic) and *source*[^1] (perhaps additional functionality will be developed in additional branches) 
 
