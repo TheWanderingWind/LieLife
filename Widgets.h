@@ -207,6 +207,9 @@ protected:
 	/// </summary>
 	virtual void runBindedFunctions(EventType type, EventParam<Widget> param);
 
+	template <typename T>
+	void testFuncRuner(EventType type, EventParam<T> param);
+
 
 
 protected:
@@ -259,6 +262,13 @@ private:
 };
 
 template <typename T>
+void testFuncRuner(EventType type, EventParam<T> param)
+{
+	T::binded.run(type, param);
+}
+
+
+template <typename T>
 void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction<T> binded)
 {
 	if ((eve.mousePosition.X == lastMousePosition.X) &&
@@ -281,7 +291,8 @@ void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction
 			// for now no events, when it matter
 			}
 			else // mouse was not in widget before
-				binded.run(MOUSE_ENTER, eve);
+				testFuncRuner(MOUSE_ENTER, eve);
+				//binded.run(MOUSE_ENTER, eve);
 
 		}
 		else 
@@ -291,7 +302,8 @@ void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction
 				(lastMousePosition.X < position.X + size.width) &&
 				(lastMousePosition.Y < position.Y + size.height))
 			{ 	// mouse was in widget before
-				binded.run(MOUSE_EXIT, eve);
+				testFuncRuner(MOUSE_EXIT, eve);
+				//binded.run(MOUSE_EXIT, eve);
 			}
 		}
 
@@ -311,19 +323,21 @@ void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction
 		{	// mouse in widget now
 			if (events.mouseButton.button == 0)
 			{	// pressed button # 0 (left button)
-				binded.run(BUTTON_LEFT_PRESS, eve);
+				testFuncRuner(BUTTON_LEFT_PRESS, eve);
+				//binded.run(BUTTON_LEFT_PRESS, eve);
 
 				if (eve.widget.getCanBeFocus() == true)
 				{
 					if (eve.widget.getFocus() == false)
 					{
-						focused.
+						//focused.
 					}
 				}
 			}
 			if (events.mouseButton.button == 1)
 			{	// pressed button # 1 (ridth button)
-				binded.run(BUTTON_RIGTH_PRESS, eve);
+				testFuncRuner(BUTTON_RIGTH_PRESS, eve);
+				//binded.run(BUTTON_RIGTH_PRESS, eve);
 			}
 		}
 	}
@@ -337,11 +351,13 @@ void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction
 		{	// mouse in widget now
 			if (events.mouseButton.button == 0)
 			{	// released button # 0 (left button)
-				binded.run(BUTTON_LEFT_RELEASE, eve);
+				testFuncRuner(BUTTON_LEFT_RELEASE, eve);
+				//binded.run(BUTTON_LEFT_RELEASE, eve);
 			}
 			if (events.mouseButton.button == 1)
 			{	// released button # 1 (rigth button)
-				binded.run(BUTTON_RIGTH_RELEASE, eve);
+				testFuncRuner(BUTTON_RIGTH_RELEASE, eve);
+				//binded.run(BUTTON_RIGTH_RELEASE, eve);
 			}
 		}
 	}
