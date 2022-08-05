@@ -47,9 +47,13 @@ void Entry::bind(EventType type, void(*fun)(EventParam<Entry>param))
 	binded.addFunct(type, fun);
 }
 
-void Entry::startUpdate(sf::Event event)
+void Entry::startEventUpdate(sf::Event event)
 {
-	Label::startUpdate(event);
-	runFunctions(event, EventParam<Entry>(*this, event), binded);
+	Label::startEventUpdate(event);
+	runEventCheking(event, EventParam<Entry>(*this, event), binded);
 }
 
+void Entry::runBindedFunctions(EventType type, EventParam<Entry> param)
+{
+	Entry::binded.run(type, param);
+}

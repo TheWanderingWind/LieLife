@@ -61,7 +61,7 @@ void Widget::updateAll(Event event)
 	for (int i = 0; i < numWidgets; i++)
 	{
 		allWidgets[i]->draw();
-		allWidgets[i]->startUpdate(event);
+		allWidgets[i]->startEventUpdate(event);
 	}
 }
 
@@ -217,7 +217,12 @@ void Widget::bind(EventType type, void(*fun)(EventParam<Widget> param))
 	binded.addFunct(type, fun);
 }
 
-void Widget::startUpdate(sf::Event event)
+void Widget::startEventUpdate(sf::Event event)
 {
-	runFunctions(event, EventParam<Widget>(*this, event), binded);
+	runEventCheking(event, EventParam<Widget>(*this, event), binded);
+}
+
+void Widget::runBindedFunctions(EventType type, EventParam<Widget> param)
+{
+	Widget::binded.run(type, param);
 }

@@ -101,8 +101,13 @@ void Button::bind(EventType type, void(*fun)(EventParam<Button>param))
 	this->binded.addFunct(type, fun);
 }
 
-void Button::startUpdate(sf::Event event)
+void Button::startEventUpdate(sf::Event event)
 {
-	Label::startUpdate(event);
-	runFunctions(event, EventParam<Button>(*this, event), binded);
+	Label::startEventUpdate(event);
+	runEventCheking(event, EventParam<Button>(*this, event), binded);
+}
+
+void Button::runBindedFunctions(EventType type, EventParam<Button> param)
+{
+	Button::binded.run(type, param);
 }

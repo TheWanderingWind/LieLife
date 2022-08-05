@@ -189,10 +189,10 @@ public:
 	//////////////////////////////////////////////////////////////////////////////
 
 	/// <summary>
-	/// Make parameters for using in binded functions and setup runFunction()
+	/// Start cheking event and setup event-functions
 	/// </summary>
 	/// <param name="event">Event object from SF, for getting some parameters</param>
-	virtual void startUpdate(sf::Event event);
+	virtual void startEventUpdate(sf::Event event);
 
 protected:
 	/// <summary>
@@ -200,7 +200,12 @@ protected:
 	/// (only for this widget!)
 	/// </summary>
 	template <typename T>
-	void runFunctions(sf::Event event, EventParam<T> eve, BindedFunction<T> binded);
+	void runEventCheking(sf::Event event, EventParam<T> eve, BindedFunction<T> binded);
+
+	/// <summary>
+	/// Run binded functions
+	/// </summary>
+	virtual void runBindedFunctions(EventType type, EventParam<Widget> param);
 
 
 
@@ -254,7 +259,7 @@ private:
 };
 
 template <typename T>
-void Widget::runFunctions(sf::Event events, EventParam<T> eve, BindedFunction<T> binded)
+void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction<T> binded)
 {
 	if ((eve.mousePosition.X == lastMousePosition.X) &&
 		(eve.mousePosition.Y == lastMousePosition.Y))
@@ -308,13 +313,13 @@ void Widget::runFunctions(sf::Event events, EventParam<T> eve, BindedFunction<T>
 			{	// pressed button # 0 (left button)
 				binded.run(BUTTON_LEFT_PRESS, eve);
 
-				//if (eve.widget.getCanBeFocus() == true)
-				//{
-				//	if (eve.widget.getFocus() == false)
-				//	{
-				//		focused.
-				//	}
-				//}
+				if (eve.widget.getCanBeFocus() == true)
+				{
+					if (eve.widget.getFocus() == false)
+					{
+						focused.
+					}
+				}
 			}
 			if (events.mouseButton.button == 1)
 			{	// pressed button # 1 (ridth button)

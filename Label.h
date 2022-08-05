@@ -132,10 +132,15 @@ public:
 	void bind(EventType type, void (*fun)(EventParam<Label> param));
 
 	/// <summary>
-	/// Make parameters for using in binded functions and setup runFunction()
+	/// Start cheking event and setup event-functions
 	/// </summary>
 	/// <param name="event">Event object from SF, for getting some parameters</param>
-	void startUpdate(sf::Event event) override;
+	void startEventUpdate(sf::Event event) override;
+
+	/// <summary>
+	/// Run binded functions
+	/// </summary>
+	void runBindedFunctions(EventType type, EventParam<Label> param);
 
 
 
