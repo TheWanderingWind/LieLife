@@ -184,7 +184,7 @@ public:
 	/// Draw and run event function all widgets
 	/// </summary>
 	/// <param name="event">sf::Event - event-object</param>
-	static void updateAll(sf::Event event);
+	static void updateAll();
 	///
 	//////////////////////////////////////////////////////////////////////////////
 
@@ -192,7 +192,7 @@ public:
 	/// Start cheking event and setup event-functions
 	/// </summary>
 	/// <param name="event">Event object from SF, for getting some parameters</param>
-	virtual void startEventUpdate(sf::Event event);
+	virtual void startEventUpdate();
 
 protected:
 	/// <summary>
@@ -200,15 +200,12 @@ protected:
 	/// (only for this widget!)
 	/// </summary>
 	template <typename T>
-	void runEventCheking(sf::Event event, EventParam<T> eve, BindedFunction<T> binded);
+	void runEventCheking(EventParam<T> eve);
 
 	/// <summary>
 	/// Run binded functions
 	/// </summary>
-	virtual void runBindedFunctions(EventType type, EventParam<Widget> param);
-
-	template <typename T>
-	void testFuncRuner(EventType type, EventParam<T> param);
+	virtual void runBindedFunctions(EventType type);
 
 
 
@@ -219,6 +216,8 @@ protected:
 
 	/// <summary> link to the window in wich the widget is located </summary>
 	sf::RenderWindow* window;
+	/// <summary> !test! event-object </summary>
+	static sf::Event event;
 
 	/// <summary> sprite of widget </summary>
 	sf::Sprite sprite;
@@ -262,19 +261,12 @@ private:
 };
 
 template <typename T>
-void testFuncRuner(EventType type, EventParam<T> param)
-{
-	T::binded.run(type, param);
-}
-
-
-template <typename T>
-void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction<T> binded)
+void Widget::runEventCheking(EventParam<T> eve)
 {
 	if ((eve.mousePosition.X == lastMousePosition.X) &&
 		(eve.mousePosition.Y == lastMousePosition.Y))
 	{	// Position of mouse was not changed
-	// for now no events, when it matter
+	// for now no event, when it matter
 	}
 	else
 	{	// Position of mouse was changed
@@ -288,10 +280,10 @@ void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction
 				(lastMousePosition.X < position.X + size.width) &&
 				(lastMousePosition.Y < position.Y + size.height))
 			{	// mouse was in widget before
-			// for now no events, when it matter
+			// for now no event, when it matter
 			}
 			else // mouse was not in widget before
-				testFuncRuner(MOUSE_ENTER, eve);
+				runBindedFunctions(MOUSE_ENTER);
 				//binded.run(MOUSE_ENTER, eve);
 
 		}
@@ -302,7 +294,7 @@ void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction
 				(lastMousePosition.X < position.X + size.width) &&
 				(lastMousePosition.Y < position.Y + size.height))
 			{ 	// mouse was in widget before
-				testFuncRuner(MOUSE_EXIT, eve);
+				runBindedFunctions(MOUSE_EXIT);
 				//binded.run(MOUSE_EXIT, eve);
 			}
 		}
@@ -313,7 +305,7 @@ void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction
 
 
 	// Not matter if mouse move
-	if ((events.type == sf::Event::MouseButtonPressed) && (buttonIsPresed == false))
+	if ((event.type == sf::Event::MouseButtonPressed) && (buttonIsPresed == false))
 	{ // Mouse button presed
 		buttonIsPresed = true;
 		if ((eve.mousePosition.X > position.X) &&
@@ -321,27 +313,27 @@ void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction
 			(eve.mousePosition.X < position.X + size.width) &&
 			(eve.mousePosition.Y < position.Y + size.height))
 		{	// mouse in widget now
-			if (events.mouseButton.button == 0)
+			if (event.mouseButton.button == 0)
 			{	// pressed button # 0 (left button)
-				testFuncRuner(BUTTON_LEFT_PRESS, eve);
+				runBindedFunctions(BUTTON_LEFT_PRESS);
 				//binded.run(BUTTON_LEFT_PRESS, eve);
 
 				if (eve.widget.getCanBeFocus() == true)
 				{
 					if (eve.widget.getFocus() == false)
 					{
-						//focused.
+						focused.runBindedFunctions(LOST_FOCUS);
 					}
 				}
 			}
-			if (events.mouseButton.button == 1)
+			if (event.mouseButton.button == 1)
 			{	// pressed button # 1 (ridth button)
-				testFuncRuner(BUTTON_RIGTH_PRESS, eve);
+				runBindedFunctions(BUTTON_RIGTH_PRESS);
 				//binded.run(BUTTON_RIGTH_PRESS, eve);
 			}
 		}
 	}
-	if ((events.type == sf::Event::MouseButtonReleased) && (buttonIsPresed == true))
+	if ((event.type == sf::Event::MouseButtonReleased) && (buttonIsPresed == true))
 	{ // Mouse button presed
 		buttonIsPresed = false;
 		if ((eve.mousePosition.X > position.X) &&
@@ -349,14 +341,14 @@ void Widget::runEventCheking(sf::Event events, EventParam<T> eve, BindedFunction
 			(eve.mousePosition.X < position.X + size.width) &&
 			(eve.mousePosition.Y < position.Y + size.height))
 		{	// mouse in widget now
-			if (events.mouseButton.button == 0)
+			if (event.mouseButton.button == 0)
 			{	// released button # 0 (left button)
-				testFuncRuner(BUTTON_LEFT_RELEASE, eve);
+				runBindedFunctions(BUTTON_LEFT_RELEASE);
 				//binded.run(BUTTON_LEFT_RELEASE, eve);
 			}
-			if (events.mouseButton.button == 1)
+			if (event.mouseButton.button == 1)
 			{	// released button # 1 (rigth button)
-				testFuncRuner(BUTTON_RIGTH_RELEASE, eve);
+				runBindedFunctions(BUTTON_RIGTH_RELEASE);
 				//binded.run(BUTTON_RIGTH_RELEASE, eve);
 			}
 		}

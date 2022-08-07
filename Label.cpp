@@ -132,13 +132,13 @@ void Label::bind(EventType type, void(*fun)(EventParam<Label>param))
 	this->binded.addFunct(type, fun);
 }
 
-void Label::startEventUpdate(sf::Event event) 
+void Label::startEventUpdate() 
 {
-	Widget::startEventUpdate(event);
-	runEventCheking(event, EventParam<Label>(*this, event), binded);
+	Widget::startEventUpdate();
+	runEventCheking(EventParam<Label>(*this, event));
 }
 
-void Label::runBindedFunctions(EventType type, EventParam<Label> param)
+void Label::runBindedFunctions(EventType type)
 {
-	Label::binded.run(type, param);
+	Label::binded.run(type, EventParam<Label>(*this, event));
 }

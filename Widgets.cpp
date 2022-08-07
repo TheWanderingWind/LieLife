@@ -17,6 +17,8 @@ Widget** Widget::allWidgets = new Widget * [1];
 
 Widget& Widget::focused = *Widget::allWidgets[0];
 
+Event Widget::event = Event();
+
 void Widget::addWidget(Widget* wid)
 {
 	numWidgets++;
@@ -56,12 +58,12 @@ void Widget::deleteWidget(int id)
 	}
 }
 
-void Widget::updateAll(Event event)
+void Widget::updateAll()
 {
 	for (int i = 0; i < numWidgets; i++)
 	{
 		allWidgets[i]->draw();
-		allWidgets[i]->startEventUpdate(event);
+		allWidgets[i]->startEventUpdate();
 	}
 }
 
@@ -217,12 +219,12 @@ void Widget::bind(EventType type, void(*fun)(EventParam<Widget> param))
 	binded.addFunct(type, fun);
 }
 
-void Widget::startEventUpdate(sf::Event event)
+void Widget::startEventUpdate()
 {
-	runEventCheking(event, EventParam<Widget>(*this, event), binded);
+	runEventCheking(EventParam<Widget>(*this, event));
 }
 
-void Widget::runBindedFunctions(EventType type, EventParam<Widget> param)
+void Widget::runBindedFunctions(EventType type)
 {
-	Widget::binded.run(type, param);
+	Widget::binded.run(type, EventParam<Widget>(*this, event));
 }

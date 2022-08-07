@@ -131,7 +131,7 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 
 		win.clear(Color(67, 67, 67, 33));
 		
-		Widget::updateAll(event);
+		Widget::updateAll();
 		win.display();
 	}
 }

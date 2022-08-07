@@ -135,12 +135,12 @@ public:
 	/// Start cheking event and setup event-functions
 	/// </summary>
 	/// <param name="event">Event object from SF, for getting some parameters</param>
-	void startEventUpdate(sf::Event event) override;
+	void startEventUpdate() override;
 
 	/// <summary>
 	/// Run binded functions
 	/// </summary>
-	void runBindedFunctions(EventType type, EventParam<Label> param);
+	void runBindedFunctions(EventType type) override;
 
 
 
