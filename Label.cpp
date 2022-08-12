@@ -140,5 +140,6 @@ void Label::startEventUpdate()
 
 void Label::runBindedFunctions(EventType type)
 {
+	//std::cout << "Label binded. ID: " << id << std::endl;
 	Label::binded.run(type, EventParam<Label>(*this, event));
 }

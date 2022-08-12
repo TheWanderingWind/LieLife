@@ -21,13 +21,13 @@ Texture Button::texturePressed = Texture();
 void butPres(EventParam<Button> param)
 {
 	Texture n = Button::getTexturePressed();
-	std::cout << "Press\n";
+	//std::cout << "Press\n";
 	param.widget.setTexture(n);
 }
 void butReles(EventParam<Button> param)
 {
 	Texture n = Button::getTextureReleased();
-	std::cout << "Release\n";
+	//std::cout << "Release\n";
 	param.widget.setTexture(n);
 }
 
@@ -109,5 +109,6 @@ void Button::startEventUpdate()
 
 void Button::runBindedFunctions(EventType type)
 {
+	//std::cout << "Button binded. ID: " << id << std::endl;
 	Button::binded.run(type, EventParam<Button>(*this, event));
 }

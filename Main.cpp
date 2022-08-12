@@ -65,14 +65,43 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	signals->readTexture.store(true, std::memory_order_seq_cst);
 	
 	// Initialization main widgets
-	Button button1(&win, Size(180, 40), Position(10, 10), "Very-very long-long string");
-	button1.setCharacterSize(16);
+	Button button1(&win, Size(180, 40), Position(10, 10), "Button #1");
+	Button button2(&win, Size(180, 40), Position(200, 10), "Button #2");
+	Button button3(&win, Size(180, 40), Position(420, 10), "Button #3");
+	Button button4(&win, Size(180, 40), Position(6400, 10), "Button #4");
+	
+	//button1.setCharacterSize(16);
+	//button2.setCharacterSize(16);
+	//button3.setCharacterSize(16);
+	//button4.setCharacterSize(16);
 
-	button1.bind(KEY_PRESS, [](EventParam<Button> param) {
-		std::cout << "pressed key: " << param.sumbol << std::endl;
+	button1.bind(LOST_FOCUS, [](EventParam<Button> param) -> void {
+		std::cout << "Button 1 lost focus\n";
+		});
+	button1.bind(GET_FOCUS, [](EventParam<Button> param) -> void {
+		std::cout << "Button 1 get focus\n";
+		});
+	button2.bind(LOST_FOCUS, [](EventParam<Button> param) -> void {
+		std::cout << "Button 2 lost focus\n";
+		});
+	button2.bind(GET_FOCUS, [](EventParam<Button> param) -> void {
+		std::cout << "Button 2 get focus\n";
+		});
+	button3.bind(LOST_FOCUS, [](EventParam<Button> param) -> void {
+		std::cout << "Button 3 lost focus\n";
+		});
+	button3.bind(GET_FOCUS, [](EventParam<Button> param) -> void {
+		std::cout << "Button 3 get focus\n";
+		});
+	button4.bind(LOST_FOCUS, [](EventParam<Button> param) -> void {
+		std::cout << "Button 4 lost focus\n";
+		});
+	button4.bind(GET_FOCUS, [](EventParam<Button> param) -> void {
+		std::cout << "Button 4 get focus\n";
 		});
 
-	Entry entry1(&win, Size(200, 30), Position(40, 200));
+
+	//Entry entry1(&win, Size(200, 30), Position(40, 200));
 
 
 	while (win.isOpen())

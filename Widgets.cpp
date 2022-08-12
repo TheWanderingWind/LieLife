@@ -13,9 +13,11 @@ using namespace sf;
 int Widget::numWidgets = 0;
 
 // make first element null-widget for focus
-Widget** Widget::allWidgets = new Widget * [1];
+Widget** Widget::allWidgets = new Widget * [0];
 
-Widget& Widget::focused = *Widget::allWidgets[0];
+Widget nullWidget = Widget();
+
+Widget& Widget::focused = nullWidget;
 
 Event Widget::event = Event();
 
@@ -34,6 +36,7 @@ void Widget::addWidget(Widget* wid)
 	newWidgets[numWidgets - 1] = wid;
 	wid->id = id;
 
+	//std::cout << "it's widget number: " << id << std::endl;
 	allWidgets = newWidgets;
 }
 
@@ -96,6 +99,7 @@ Widget::Widget(RenderWindow* win, Size siz, Position pos, Color color)
 Widget::Widget()
 {
 	Widget::addWidget(this);
+	binded = BindedFunction<Widget>();
 	// just null widget
 }
 
@@ -221,10 +225,17 @@ void Widget::bind(EventType type, void(*fun)(EventParam<Widget> param))
 
 void Widget::startEventUpdate()
 {
+	if (id == 0) return;
 	runEventCheking(EventParam<Widget>(*this, event));
 }
 
 void Widget::runBindedFunctions(EventType type)
 {
+	//std::cout << "Widget binded. ID: " << id << std::endl;
+	if (type == LOST_FOCUS && &focused == nullptr)
+	{
+		focused = *allWidgets[0];
+	}
+	if (id == 0) return;
 	Widget::binded.run(type, EventParam<Widget>(*this, event));
 }

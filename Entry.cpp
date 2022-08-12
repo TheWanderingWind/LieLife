@@ -55,5 +55,6 @@ void Entry::startEventUpdate()
 
 void Entry::runBindedFunctions(EventType type)
 {
+	//std::cout << "Entry binded. ID: " << id << std::endl;
 	Entry::binded.run(type, EventParam<Entry>(*this, event));
 }
