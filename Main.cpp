@@ -48,7 +48,8 @@ Resources resources;
 int threadWindow(winParam* param, winSignals* signals, Resources* res)
 {
 	RenderWindow win((*param).videoMode, (*param).name); // Main window
-	Event event;			// event-object for handles events
+	Event& event = Widget::getEvent();
+	// event-object for handles events
 	
 
 	// Geting texture for button
@@ -70,11 +71,6 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 	Button button3(&win, Size(180, 40), Position(420, 10), "Button #3");
 	Button button4(&win, Size(180, 40), Position(6400, 10), "Button #4");
 	
-	//button1.setCharacterSize(16);
-	//button2.setCharacterSize(16);
-	//button3.setCharacterSize(16);
-	//button4.setCharacterSize(16);
-
 	button1.bind(LOST_FOCUS, [](EventParam<Button> param) -> void {
 		std::cout << "Button 1 lost focus\n";
 		});
@@ -103,7 +99,6 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 
 	//Entry entry1(&win, Size(200, 30), Position(40, 200));
 
-
 	while (win.isOpen())
 	{
 		// Forced window close
@@ -124,9 +119,12 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 			(*signals).updateParam.store(false, std::memory_order_seq_cst);
 		}
 
+		
+
 		// Handles events
-		if (win.pollEvent(event))
+		while (win.pollEvent(event))
 		{
+			Widget::updateAllCalls();
 			switch (event.type)
 			{
 			case Event::Closed:
@@ -159,8 +157,7 @@ int threadWindow(winParam* param, winSignals* signals, Resources* res)
 		}
 
 		win.clear(Color(67, 67, 67, 33));
-		
-		Widget::updateAll();
+		Widget::updateAllDraws();
 		win.display();
 	}
 }

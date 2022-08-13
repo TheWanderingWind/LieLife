@@ -61,12 +61,19 @@ void Widget::deleteWidget(int id)
 	}
 }
 
-void Widget::updateAll()
+void Widget::updateAllCalls()
+{
+	for (int i = 0; i < numWidgets; i++)
+	{
+		allWidgets[i]->startEventUpdate();
+	}
+}
+
+void Widget::updateAllDraws()
 {
 	for (int i = 0; i < numWidgets; i++)
 	{
 		allWidgets[i]->draw();
-		allWidgets[i]->startEventUpdate();
 	}
 }
 
@@ -200,6 +207,8 @@ void Widget::setCanBeFocus(bool canBe)
 	if (canBe == false) setFocus(false);
 }
 
+Event& Widget::getEvent() { return event; }
+
 
 
 
@@ -225,6 +234,7 @@ void Widget::bind(EventType type, void(*fun)(EventParam<Widget> param))
 
 void Widget::startEventUpdate()
 {
+	//std::cout << "Id widget:" << id << std::endl;
 	if (id == 0) return;
 	runEventCheking(EventParam<Widget>(*this, event));
 }

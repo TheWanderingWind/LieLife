@@ -134,6 +134,12 @@ public:
 	/// Getter focused widget link
 	/// </summary>
 	static Widget& getFocused();
+	///
+	/// <summary>
+	/// Getter event-object
+	/// </summary>
+	/// <returns>sf::Event</returns>
+	static sf::Event& getEvent();
 	/// 
 	//////////////////////////////////////////////////////////////////////////////
 
@@ -181,10 +187,16 @@ public:
 	/// Static ///////////////////////////////////////////////////////////////////
 	/// 
 	/// <summary>
-	/// Draw and run event function all widgets
+	/// Call event-function from all widgets
 	/// </summary>
 	/// <param name="event">sf::Event - event-object</param>
-	static void updateAll();
+	static void updateAllCalls();
+	///
+	/// <summary>
+	/// Draw all widgets
+	/// </summary>
+	/// <param name="event">sf::Event - event-object</param>
+	static void updateAllDraws();
 	///
 	//////////////////////////////////////////////////////////////////////////////
 
@@ -264,100 +276,98 @@ protected:
 template <typename T>
 void Widget::runEventCheking(EventParam<T> eve)
 {
-	while (window->pollEvent(event))
-	{
-		if ((eve.mousePosition.X == lastMousePosition.X) &&
-			(eve.mousePosition.Y == lastMousePosition.Y))
-		{	// Position of mouse was not changed
-		// for now no event, when it matter
-		}
-		else
-		{	// Position of mouse was changed
-			if ((eve.mousePosition.X > position.X) &&
-				(eve.mousePosition.Y > position.Y) &&
-				(eve.mousePosition.X < position.X + size.width) &&
-				(eve.mousePosition.Y < position.Y + size.height))
-			{	// mouse in widget now
-				if ((lastMousePosition.X > position.X) &&
-					(lastMousePosition.Y > position.Y) &&
-					(lastMousePosition.X < position.X + size.width) &&
-					(lastMousePosition.Y < position.Y + size.height))
-				{	// mouse was in widget before
-				// for now no event, when it matter
-				}
-				else // mouse was not in widget before
-					runBindedFunctions(MOUSE_ENTER);
-				//binded.run(MOUSE_ENTER, eve);
-
+	
+	if ((eve.mousePosition.X == lastMousePosition.X) &&
+		(eve.mousePosition.Y == lastMousePosition.Y))
+	{	// Position of mouse was not changed
+	// for now no event, when it matter
+	}
+	else
+	{	// Position of mouse was changed
+		if ((eve.mousePosition.X > position.X) &&
+			(eve.mousePosition.Y > position.Y) &&
+			(eve.mousePosition.X < position.X + size.width) &&
+			(eve.mousePosition.Y < position.Y + size.height))
+		{	// mouse in widget now
+			if ((lastMousePosition.X > position.X) &&
+				(lastMousePosition.Y > position.Y) &&
+				(lastMousePosition.X < position.X + size.width) &&
+				(lastMousePosition.Y < position.Y + size.height))
+			{	// mouse was in widget before
+			// for now no event, when it matter
 			}
 			else
-			{	// mouse not in widget now
-				if ((lastMousePosition.X > position.X) &&
-					(lastMousePosition.Y > position.Y) &&
-					(lastMousePosition.X < position.X + size.width) &&
-					(lastMousePosition.Y < position.Y + size.height))
-				{ 	// mouse was in widget before
-					runBindedFunctions(MOUSE_EXIT);
-					//binded.run(MOUSE_EXIT, eve);
-				}
-			}
-
-			// set new last mouse position
-			lastMousePosition = eve.mousePosition;
-		}
-
-
-		// Not matter if mouse move
-		if ((event.type == sf::Event::MouseButtonPressed) && (buttonIsPresed == false))
-		{ // Mouse button presed
-			std::cout << "mouse pressed\n";
-			buttonIsPresed = true;
-			if ((eve.mousePosition.X > position.X) &&
-				(eve.mousePosition.Y > position.Y) &&
-				(eve.mousePosition.X < position.X + size.width) &&
-				(eve.mousePosition.Y < position.Y + size.height))
-			{	// mouse in widget now
-				if (event.mouseButton.button == 0)
-				{	// pressed button # 0 (left button)
-					runBindedFunctions(BUTTON_LEFT_PRESS);
-					//binded.run(BUTTON_LEFT_PRESS, eve);
-
-					if (eve.widget.getCanBeFocus() == true)
-					{
-						if (eve.widget.getFocus() == false)
-						{
-							focused.runBindedFunctions(LOST_FOCUS);
-						}
-					}
-				}
-				if (event.mouseButton.button == 1)
-				{	// pressed button # 1 (ridth button)
-					runBindedFunctions(BUTTON_RIGTH_PRESS);
-					//binded.run(BUTTON_RIGTH_PRESS, eve);
-				}
+			{	// mouse was not in widget before
+				runBindedFunctions(MOUSE_ENTER);
 			}
 		}
-		if ((event.type == sf::Event::MouseButtonReleased) && (buttonIsPresed == true))
-		{ // Mouse button presed
-			std::cout << "mouse released\n";
-			buttonIsPresed = false;
-			if ((eve.mousePosition.X > position.X) &&
-				(eve.mousePosition.Y > position.Y) &&
-				(eve.mousePosition.X < position.X + size.width) &&
-				(eve.mousePosition.Y < position.Y + size.height))
-			{	// mouse in widget now
-				if (event.mouseButton.button == 0)
-				{	// released button # 0 (left button)
-					runBindedFunctions(BUTTON_LEFT_RELEASE);
-					//binded.run(BUTTON_LEFT_RELEASE, eve);
-				}
-				if (event.mouseButton.button == 1)
-				{	// released button # 1 (rigth button)
-					runBindedFunctions(BUTTON_RIGTH_RELEASE);
-					//binded.run(BUTTON_RIGTH_RELEASE, eve);
-				}
+		else
+		{	// mouse not in widget now
+			if ((lastMousePosition.X > position.X) &&
+				(lastMousePosition.Y > position.Y) &&
+				(lastMousePosition.X < position.X + size.width) &&
+				(lastMousePosition.Y < position.Y + size.height))
+			{ 	// mouse was in widget before
+				runBindedFunctions(MOUSE_EXIT);
 			}
 		}
 	}
+
+	//std::cout << event.type << std::endl;
+	//if (event.type == sf::Event::MouseButtonPressed) std::cout << "Mouse was pressed";
+	//if (event.type == sf::Event::MouseButtonReleased) std::cout << "Mouse was released";
+
+	// Not matter if mouse move
+	if ((event.type == sf::Event::MouseButtonPressed) && (buttonIsPresed == false))
+	{ // Mouse button presed
+		buttonIsPresed = true;
+		if ((eve.mousePosition.X > position.X) &&
+			(eve.mousePosition.Y > position.Y) &&
+			(eve.mousePosition.X < position.X + size.width) &&
+			(eve.mousePosition.Y < position.Y + size.height))
+		{	// mouse in widget now
+			if (event.mouseButton.button == 0)
+			{	// pressed button # 0 (left button)
+				runBindedFunctions(BUTTON_LEFT_PRESS);
+
+				if (eve.widget.getCanBeFocus() == true)
+				{
+					if (eve.widget.getFocus() == false)
+					{
+						focused.runBindedFunctions(LOST_FOCUS);
+					}
+					std::cout << "Call GET_FOCUS event\n";
+					runBindedFunctions(GET_FOCUS);
+					focused = *this;
+				}
+			}
+			if (event.mouseButton.button == 1)
+			{	// pressed button # 1 (ridth button)
+				std::cout << "Call BUTTON_RIGTH_PRESS event\n";
+				runBindedFunctions(BUTTON_RIGTH_PRESS);
+			}
+		}
+	}
+	if ((event.type == sf::Event::MouseButtonReleased) && (buttonIsPresed == true))
+	{ // Mouse button presed
+		buttonIsPresed = false;
+		if ((eve.mousePosition.X > position.X) &&
+			(eve.mousePosition.Y > position.Y) &&
+			(eve.mousePosition.X < position.X + size.width) &&
+			(eve.mousePosition.Y < position.Y + size.height))
+		{	// mouse in widget now
+			if (event.mouseButton.button == 0)
+			{	// released button # 0 (left button)
+				runBindedFunctions(BUTTON_LEFT_RELEASE);
+			}
+			if (event.mouseButton.button == 1)
+			{	// released button # 1 (rigth button)
+				runBindedFunctions(BUTTON_RIGTH_RELEASE);
+			}
+		}
+	}
+	
+	// set new last mouse position
+	lastMousePosition = eve.mousePosition;
 }
 

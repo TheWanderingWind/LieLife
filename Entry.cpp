@@ -49,12 +49,12 @@ void Entry::bind(EventType type, void(*fun)(EventParam<Entry>param))
 
 void Entry::startEventUpdate()
 {
-	Label::startEventUpdate();
 	runEventCheking(EventParam<Entry>(*this, event));
 }
 
 void Entry::runBindedFunctions(EventType type)
 {
 	//std::cout << "Entry binded. ID: " << id << std::endl;
+	Label::runBindedFunctions(type);
 	Entry::binded.run(type, EventParam<Entry>(*this, event));
 }

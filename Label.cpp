@@ -134,12 +134,12 @@ void Label::bind(EventType type, void(*fun)(EventParam<Label>param))
 
 void Label::startEventUpdate() 
 {
-	Widget::startEventUpdate();
 	runEventCheking(EventParam<Label>(*this, event));
 }
 
 void Label::runBindedFunctions(EventType type)
 {
 	//std::cout << "Label binded. ID: " << id << std::endl;
+	Widget::runBindedFunctions(type);
 	Label::binded.run(type, EventParam<Label>(*this, event));
 }

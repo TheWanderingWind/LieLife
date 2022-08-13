@@ -103,12 +103,12 @@ void Button::bind(EventType type, void(*fun)(EventParam<Button>param))
 
 void Button::startEventUpdate()
 {
-	Label::startEventUpdate();
 	runEventCheking(EventParam<Button>(*this, event));
 }
 
 void Button::runBindedFunctions(EventType type)
 {
 	//std::cout << "Button binded. ID: " << id << std::endl;
+	Label::runBindedFunctions(type);
 	Button::binded.run(type, EventParam<Button>(*this, event));
 }
